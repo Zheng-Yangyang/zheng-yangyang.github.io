@@ -1,0 +1,649 @@
+
+
+<!DOCTYPE html>
+<html lang="zh-CN" data-default-color-scheme=auto>
+
+
+
+<head>
+  <meta charset="UTF-8">
+  <link rel="apple-touch-icon" sizes="76x76" href="/img/fluid.png">
+  <link rel="icon" href="/img/fluid.png">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, shrink-to-fit=no">
+  <meta http-equiv="x-ua-compatible" content="ie=edge">
+  
+  <meta name="theme-color" content="#2f4154">
+  <meta name="author" content="zyy">
+  <meta name="keywords" content="">
+  
+    <meta name="description" content="关于bfs中的floodfill算法总结简述floodfill 是宽度优先搜索中一个经典模型，用来判断连通块的数量以及一些其他性质。但其本质还是宽度优先搜索   flood算法过程简介首先宽度优先搜索都是需要用队列完成，所以一般都是用数组模拟队列去完成，然后由于要保存两个信息，自然就有了定义pair等操作，为了保证是线性的复杂度，所以一个状态数组也是必不可少的。还有一点需要注意的是，注意读入的是字">
+<meta property="og:type" content="article">
+<meta property="og:title" content="BFS中floodfill算法总结">
+<meta property="og:url" content="http://example.com/2022/08/02/BFS%E4%B8%ADfloodfill%E7%AE%97%E6%B3%95%E6%80%BB%E7%BB%93/index.html">
+<meta property="og:site_name" content="小郑同学">
+<meta property="og:description" content="关于bfs中的floodfill算法总结简述floodfill 是宽度优先搜索中一个经典模型，用来判断连通块的数量以及一些其他性质。但其本质还是宽度优先搜索   flood算法过程简介首先宽度优先搜索都是需要用队列完成，所以一般都是用数组模拟队列去完成，然后由于要保存两个信息，自然就有了定义pair等操作，为了保证是线性的复杂度，所以一个状态数组也是必不可少的。还有一点需要注意的是，注意读入的是字">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="http://example.com/2022/08/02/BFS%E4%B8%ADfloodfill%E7%AE%97%E6%B3%95%E6%80%BB%E7%BB%93/floodfill.png">
+<meta property="article:published_time" content="2022-08-02T08:40:48.000Z">
+<meta property="article:modified_time" content="2022-08-07T08:57:25.418Z">
+<meta property="article:author" content="zyy">
+<meta property="article:tag" content="总结类">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:image" content="http://example.com/2022/08/02/BFS%E4%B8%ADfloodfill%E7%AE%97%E6%B3%95%E6%80%BB%E7%BB%93/floodfill.png">
+  
+  
+  
+  <title>BFS中floodfill算法总结 - 小郑同学</title>
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/twitter-bootstrap/4.6.1/css/bootstrap.min.css" />
+
+
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/github-markdown-css/4.0.0/github-markdown.min.css" />
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/hint.css/2.7.0/hint.min.css" />
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/fancybox/3.5.7/jquery.fancybox.min.css" />
+
+
+
+<!-- 主题依赖的图标库，不要自行修改 -->
+<!-- Do not modify the link that theme dependent icons -->
+
+<link rel="stylesheet" href="//at.alicdn.com/t/font_1749284_hj8rtnfg7um.css">
+
+
+
+<link rel="stylesheet" href="//at.alicdn.com/t/font_1736178_lbnruvf0jn.css">
+
+
+<link  rel="stylesheet" href="/css/main.css" />
+
+
+  <link id="highlight-css" rel="stylesheet" href="/css/highlight.css" />
+  
+    <link id="highlight-css-dark" rel="stylesheet" href="/css/highlight-dark.css" />
+  
+
+
+
+
+  <script id="fluid-configs">
+    var Fluid = window.Fluid || {};
+    Fluid.ctx = Object.assign({}, Fluid.ctx)
+    var CONFIG = {"hostname":"example.com","root":"/","version":"1.9.2","typing":{"enable":true,"typeSpeed":70,"cursorChar":"_","loop":false,"scope":[]},"anchorjs":{"enable":true,"element":"h1,h2,h3,h4,h5,h6","placement":"left","visible":"hover","icon":""},"progressbar":{"enable":true,"height_px":3,"color":"#29d","options":{"showSpinner":false,"trickleSpeed":100}},"code_language":{"enable":true,"default":"TEXT"},"copy_btn":true,"image_caption":{"enable":true},"image_zoom":{"enable":true,"img_url_replace":["",""]},"toc":{"enable":true,"placement":"right","headingSelector":"h1,h2,h3,h4,h5,h6","collapseDepth":0},"lazyload":{"enable":true,"loading_img":"/img/loading.gif","onlypost":false,"offset_factor":2},"web_analytics":{"enable":false,"follow_dnt":true,"baidu":null,"google":null,"gtag":null,"tencent":{"sid":null,"cid":null},"woyaola":null,"cnzz":null,"leancloud":{"app_id":null,"app_key":null,"server_url":null,"path":"window.location.pathname","ignore_local":false}},"search_path":"/local-search.xml"};
+
+    if (CONFIG.web_analytics.follow_dnt) {
+      var dntVal = navigator.doNotTrack || window.doNotTrack || navigator.msDoNotTrack;
+      Fluid.ctx.dnt = dntVal && (dntVal.startsWith('1') || dntVal.startsWith('yes') || dntVal.startsWith('on'));
+    }
+  </script>
+  <script  src="/js/utils.js" ></script>
+  <script  src="/js/color-schema.js" ></script>
+  
+
+
+  
+<meta name="generator" content="Hexo 6.2.0"></head>
+
+
+<body>
+  
+
+  <header>
+    
+
+<div class="header-inner" style="height: 70vh;">
+  <nav id="navbar" class="navbar fixed-top  navbar-expand-lg navbar-dark scrolling-navbar">
+  <div class="container">
+    <a class="navbar-brand" href="/">
+      <strong>小郑同学</strong>
+    </a>
+
+    <button id="navbar-toggler-btn" class="navbar-toggler" type="button" data-toggle="collapse"
+            data-target="#navbarSupportedContent"
+            aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+      <div class="animated-icon"><span></span><span></span><span></span></div>
+    </button>
+
+    <!-- Collapsible content -->
+    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+      <ul class="navbar-nav ml-auto text-center">
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/">
+                <i class="iconfont icon-home-fill"></i>
+                首页
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/archives/">
+                <i class="iconfont icon-archive-fill"></i>
+                归档
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/categories/">
+                <i class="iconfont icon-category-fill"></i>
+                分类
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/tags/">
+                <i class="iconfont icon-tags-fill"></i>
+                标签
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/about/">
+                <i class="iconfont icon-user-fill"></i>
+                关于
+              </a>
+            </li>
+          
+        
+        
+          <li class="nav-item" id="search-btn">
+            <a class="nav-link" target="_self" href="javascript:;" data-toggle="modal" data-target="#modalSearch" aria-label="Search">
+              &nbsp;<i class="iconfont icon-search"></i>&nbsp;
+            </a>
+          </li>
+          
+        
+        
+          <li class="nav-item" id="color-toggle-btn">
+            <a class="nav-link" target="_self" href="javascript:;" aria-label="Color Toggle">&nbsp;<i
+                class="iconfont icon-dark" id="color-toggle-icon"></i>&nbsp;</a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+</nav>
+
+  
+
+<div id="banner" class="banner" parallax=true
+     style="background: url('/img/default.png') no-repeat center center; background-size: cover;">
+  <div class="full-bg-img">
+    <div class="mask flex-center" style="background-color: rgba(0, 0, 0, 0.3)">
+      <div class="banner-text text-center fade-in-up">
+        <div class="h2">
+          
+            <span id="subtitle" data-typed-text="BFS中floodfill算法总结"></span>
+          
+        </div>
+
+        
+          
+  <div class="mt-3">
+    
+    
+      <span class="post-meta">
+        <i class="iconfont icon-date-fill" aria-hidden="true"></i>
+        <time datetime="2022-08-02 16:40" pubdate>
+          2022年8月2日 下午
+        </time>
+      </span>
+    
+  </div>
+
+  <div class="mt-1">
+    
+      <span class="post-meta mr-2">
+        <i class="iconfont icon-chart"></i>
+        
+          5.8k 字
+        
+      </span>
+    
+
+    
+      <span class="post-meta mr-2">
+        <i class="iconfont icon-clock-fill"></i>
+        
+        
+        
+          49 分钟
+        
+      </span>
+    
+
+    
+    
+  </div>
+
+
+        
+      </div>
+
+      
+    </div>
+  </div>
+</div>
+
+</div>
+
+  </header>
+
+  <main>
+    
+      
+
+<div class="container-fluid nopadding-x">
+  <div class="row nomargin-x">
+    <div class="side-col d-none d-lg-block col-lg-2">
+      
+
+    </div>
+
+    <div class="col-lg-8 nopadding-x-md">
+      <div class="container nopadding-x-md" id="board-ctn">
+        <div id="board">
+          <article class="post-content mx-auto">
+            <!-- SEO header -->
+            <h1 style="display: none">BFS中floodfill算法总结</h1>
+            
+            
+              <div class="markdown-body">
+                
+                <h3 id="关于bfs中的floodfill算法总结"><a href="#关于bfs中的floodfill算法总结" class="headerlink" title="关于bfs中的floodfill算法总结"></a>关于bfs中的floodfill算法总结</h3><h4 id="简述"><a href="#简述" class="headerlink" title="简述"></a>简述</h4><p>floodfill 是宽度优先搜索中一个经典模型，用来判断连通块的数量以及一些其他性质。但其本质还是宽度优先搜索</p>
+<img src="/2022/08/02/BFS%E4%B8%ADfloodfill%E7%AE%97%E6%B3%95%E6%80%BB%E7%BB%93/floodfill.png" srcset="/img/loading.gif" lazyload class>
+
+<h4 id="flood算法过程简介"><a href="#flood算法过程简介" class="headerlink" title="flood算法过程简介"></a>flood算法过程简介</h4><p>首先宽度优先搜索都是需要用队列完成，所以一般都是用数组模拟队列去完成，然后由于要保存两个信息，自然就有了定义pair等操作，为了保证是线性的复杂度，所以一个状态数组也是必不可少的。还有一点需要注意的是，注意读入的是字符还是整型。不然答案错了很难debug出来</p>
+<p>接着是具体步骤。前面的操作都是相同的，将该点放入队列，然后标记该点已被使用，接下来就是队列不空的操作，取出队列头操作。接下来需要分两种，一种是统计周围八个元素的，这种情况，我们一般写一个二重循环来判断，接着最重要也是最容易出错的，就是判断哪些情况需要特判掉，比如数组刚好等于要遍历的那个点，数组越界，该点已经被用过(标记过)，还有不同条件的具体要求。判断所有条件之后，然后就需要将这个点加入队尾，然后标记这个点用过。第二种情况是统计周围四个元素的，这种一般定义一个dx和dy数组，分别表示上下左右四个方向，然后再去求后面的操作。</p>
+<h4 id="1-1097-池塘计数"><a href="#1-1097-池塘计数" class="headerlink" title="1.1097. 池塘计数"></a>1.1097. <a target="_blank" rel="noopener" href="https://www.acwing.com/problem/content/1099/">池塘计数</a></h4><figure class="highlight latex"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br></pre></td><td class="code"><pre><code class="hljs latex">农夫约翰有一片 N∗M 的矩形土地。<br><br>最近，由于降雨的原因，部分土地被水淹没了。<br><br>现在用一个字符矩阵来表示他的土地。<br><br>每个单元格内，如果包含雨水，则用”W”表示，如果不含雨水，则用”.”表示。<br><br>现在，约翰想知道他的土地中形成了多少片池塘。<br><br>每组相连的积水单元格集合可以看作是一片池塘。<br><br>每个单元格视为与其上、下、左、右、左上、右上、左下、右下八个邻近单元格相连。<br><br>请你输出共有多少片池塘，即矩阵中共有多少片相连的”W”块。<br><br>输入格式<br>第一行包含两个整数 N 和 M。<br><br>接下来 N 行，每行包含 M 个字符，字符为”W”或”.”，用以表示矩形土地的积水状况，字符之间没有空格。<br><br>输出格式<br>输出一个整数，表示池塘数目。<br><br>数据范围<br>1≤N,M≤1000<br>输入样例：<br>10 12<br>W........WW.<br>.WWW.....WWW<br>....WW...WW.<br>.........WW.<br>.........W..<br>..W......W..<br>.W.W.....WW.<br>W.W.W.....W.<br>.W.W......W.<br>..W.......W.<br>输出样例：<br>3<br></code></pre></td></tr></table></figure>
+
+
+
+<p>最基础的floodfill算法，只是统计连通块的数量的算法</p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br></pre></td><td class="code"><pre><code class="hljs cpp"><span class="hljs-meta">#<span class="hljs-keyword">include</span> <span class="hljs-string">&lt;iostream&gt;</span></span><br><span class="hljs-meta">#<span class="hljs-keyword">include</span> <span class="hljs-string">&lt;cstring&gt;</span></span><br><span class="hljs-meta">#<span class="hljs-keyword">include</span> <span class="hljs-string">&lt;algorithm&gt;</span></span><br><span class="hljs-meta">#<span class="hljs-keyword">define</span> x first</span><br><span class="hljs-meta">#<span class="hljs-keyword">define</span> y second</span><br><span class="hljs-keyword">using</span> <span class="hljs-keyword">namespace</span> std;<br><br><br><span class="hljs-type">const</span> <span class="hljs-type">int</span> N = <span class="hljs-number">1010</span>, M = N * N;<br><span class="hljs-keyword">typedef</span> pair&lt;<span class="hljs-type">int</span>, <span class="hljs-type">int</span>&gt; PII;<br><span class="hljs-type">char</span> g[N][N];<br><span class="hljs-type">bool</span> st[N][N];<br>PII q[M];<br><span class="hljs-type">int</span> n, m;<br><span class="hljs-function"><span class="hljs-type">void</span> <span class="hljs-title">bfs</span><span class="hljs-params">(<span class="hljs-type">int</span> sx, <span class="hljs-type">int</span> sy)</span></span>&#123;<br>    <span class="hljs-type">int</span> hh = <span class="hljs-number">0</span>, tt = <span class="hljs-number">0</span>;<br>    q[<span class="hljs-number">0</span>] = &#123;sx, sy&#125;;<br>    st[sx][sy] = <span class="hljs-literal">true</span>;<br>    <span class="hljs-keyword">while</span>(hh &lt;= tt)&#123;<br>        PII t = q[hh ++]; <span class="hljs-comment">// 取出队头</span><br>        <span class="hljs-comment">//遍历周围八个元素可以用一个二重循环来写</span><br>        <span class="hljs-keyword">for</span>(<span class="hljs-type">int</span> i = t.x - <span class="hljs-number">1</span>; i &lt;= t.x + <span class="hljs-number">1</span>; i ++)<span class="hljs-comment">//注意是需要有等号的</span><br>            <span class="hljs-keyword">for</span>(<span class="hljs-type">int</span> j = t.y - <span class="hljs-number">1</span>; j &lt;= t.y + <span class="hljs-number">1</span>; j ++)&#123;<span class="hljs-comment">//注意那些需要特判掉的情况不要漏掉</span><br>                <span class="hljs-keyword">if</span>(i == t.x &amp;&amp; j == t.y)    <span class="hljs-keyword">continue</span>;<br>                <span class="hljs-keyword">if</span>(i &lt; <span class="hljs-number">0</span> || i &gt;= n || j &lt; <span class="hljs-number">0</span> || j &gt;= m)    <span class="hljs-keyword">continue</span>;<br>                <span class="hljs-keyword">if</span>(st[i][j])    <span class="hljs-keyword">continue</span>;<br>                <span class="hljs-keyword">if</span>(g[i][j] == <span class="hljs-string">&#x27;.&#x27;</span>)  <span class="hljs-keyword">continue</span>;<br>                q[++ tt] = &#123;i, j&#125;;<br>                st[i][j] = <span class="hljs-literal">true</span>;<br>            &#125;<br>    &#125;<br>&#125;<br><br><span class="hljs-function"><span class="hljs-type">int</span> <span class="hljs-title">main</span><span class="hljs-params">()</span></span><br><span class="hljs-function"></span>&#123;<br>    <br>    cin &gt;&gt; n &gt;&gt; m;<br>    <span class="hljs-keyword">for</span>(<span class="hljs-type">int</span> i = <span class="hljs-number">0</span>; i &lt; n; i ++)<br>        <span class="hljs-built_in">scanf</span>(<span class="hljs-string">&quot;%s&quot;</span>, g[i]);  <span class="hljs-comment">//可以一排直接读一个字符串，不用二重循环 而且读s不需要加取址</span><br>    <span class="hljs-type">int</span> cnt = <span class="hljs-number">0</span>;<br>    <span class="hljs-keyword">for</span>(<span class="hljs-type">int</span> i = <span class="hljs-number">0</span>; i &lt; n; i ++)<br>        <span class="hljs-keyword">for</span>(<span class="hljs-type">int</span> j = <span class="hljs-number">0</span>; j &lt; m; j ++)<br>            &#123;<br>                <span class="hljs-keyword">if</span>(!st[i][j] &amp;&amp; g[i][j] == <span class="hljs-string">&#x27;W&#x27;</span>)<br>                    &#123;<br>                        <span class="hljs-built_in">bfs</span>(i, j);<br>                        cnt ++;<br>                    &#125;<br>            &#125;<br>            <br>    <span class="hljs-built_in">printf</span>(<span class="hljs-string">&quot;%d&quot;</span>, cnt);<br>    <span class="hljs-keyword">return</span> <span class="hljs-number">0</span>;<br>            <br>        <br>&#125;<br></code></pre></td></tr></table></figure>
+
+
+
+
+
+<h4 id="2-1098-城堡问题"><a href="#2-1098-城堡问题" class="headerlink" title="2.1098. 城堡问题"></a>2.1098. <a target="_blank" rel="noopener" href="https://www.acwing.com/problem/content/1100/">城堡问题</a></h4><figure class="highlight latex"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br></pre></td><td class="code"><pre><code class="hljs latex"> 1   2   3   4   5   6   7  <br>   <span class="hljs-params">#############################</span><br> 1 <span class="hljs-params">#</span>   |   <span class="hljs-params">#</span>   |   <span class="hljs-params">#</span>   |   |   <span class="hljs-params">#</span><br>   <span class="hljs-params">#####</span>---<span class="hljs-params">#####</span>---<span class="hljs-params">#</span>---<span class="hljs-params">#####</span>---<span class="hljs-params">#</span><br> 2 <span class="hljs-params">#</span>   <span class="hljs-params">#</span>   |   <span class="hljs-params">#</span>   <span class="hljs-params">#</span>   <span class="hljs-params">#</span>   <span class="hljs-params">#</span>   <span class="hljs-params">#</span><br>   <span class="hljs-params">#</span>---<span class="hljs-params">#####</span>---<span class="hljs-params">#####</span>---<span class="hljs-params">#####</span>---<span class="hljs-params">#</span><br> 3 <span class="hljs-params">#</span>   |   |   <span class="hljs-params">#</span>   <span class="hljs-params">#</span>   <span class="hljs-params">#</span>   <span class="hljs-params">#</span>   <span class="hljs-params">#</span><br>   <span class="hljs-params">#</span>---<span class="hljs-params">#########</span>---<span class="hljs-params">#####</span>---<span class="hljs-params">#</span>---<span class="hljs-params">#</span><br> 4 <span class="hljs-params">#</span>   <span class="hljs-params">#</span>   |   |   |   |   <span class="hljs-params">#</span>   <span class="hljs-params">#</span><br>   <span class="hljs-params">#############################</span><br>           (图 1)<br><br>   <span class="hljs-params">#</span>  = Wall   <br>   |  = No wall<br>   -  = No wall<br><br>   方向：上北下南左西右东。<br>图1是一个城堡的地形图。<br><br>请你编写一个程序，计算城堡一共有多少房间，最大的房间有多大。<br><br>城堡被分割成 m∗n个方格区域，每个方格区域可以有0~4面墙。<br><br>注意：墙体厚度忽略不计。<br><br>输入格式<br>第一行包含两个整数 m 和 n，分别表示城堡南北方向的长度和东西方向的长度。<br><br>接下来 m 行，每行包含 n 个整数，每个整数都表示平面图对应位置的方块的墙的特征。<br><br>每个方块中墙的特征由数字 P 来描述，我们用1表示西墙，2表示北墙，4表示东墙，8表示南墙，P 为该方块包含墙的数字之和。<br><br>例如，如果一个方块的 P 为3，则 3 = 1 + 2，该方块包含西墙和北墙。<br><br>城堡的内墙被计算两次，方块(1,1)的南墙同时也是方块(2,1)的北墙。<br><br>输入的数据保证城堡至少有两个房间。<br><br>输出格式<br>共两行，第一行输出房间总数，第二行输出最大房间的面积（方块数）。<br><br>数据范围<br>1≤m,n≤50,<br>0≤P≤15<br>输入样例：<br>4 7 <br>11 6 11 6 3 10 6 <br>7 9 6 13 5 15 5 <br>1 10 12 7 13 7 5 <br>13 11 10 8 10 12 13 <br>输出样例：<br>5<br>9<br></code></pre></td></tr></table></figure>
+
+
+
+<p>这道题就是简介中讲的统计上下左右四个方向的，题目需要判断那一边有围墙，我们就定义一下4个方向，用位运算判断那个方向到底有没有围墙</p>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br></pre></td><td class="code"><pre><code class="hljs c++"><span class="hljs-meta">#<span class="hljs-keyword">include</span> <span class="hljs-string">&lt;iostream&gt;</span></span><br><span class="hljs-meta">#<span class="hljs-keyword">include</span> <span class="hljs-string">&lt;cstring&gt;</span></span><br><span class="hljs-meta">#<span class="hljs-keyword">include</span> <span class="hljs-string">&lt;algorithm&gt;</span></span><br><span class="hljs-keyword">using</span> <span class="hljs-keyword">namespace</span> std;<br><span class="hljs-keyword">typedef</span> pair&lt;<span class="hljs-type">int</span>, <span class="hljs-type">int</span>&gt; PII;<br><span class="hljs-meta">#<span class="hljs-keyword">define</span> x first</span><br><span class="hljs-meta">#<span class="hljs-keyword">define</span> y second</span><br><span class="hljs-type">const</span> <span class="hljs-type">int</span> N = <span class="hljs-number">55</span>, M = N * N;<br>PII q[M];<br><span class="hljs-type">int</span> g[N][N];<br><span class="hljs-type">bool</span> st[N][N];<br><span class="hljs-type">int</span> n, m;<br><span class="hljs-function"><span class="hljs-type">int</span> <span class="hljs-title">bfs</span><span class="hljs-params">(<span class="hljs-type">int</span> sx, <span class="hljs-type">int</span> sy)</span></span><br><span class="hljs-function"></span>&#123;<br>    <span class="hljs-type">int</span> hh = <span class="hljs-number">0</span>, tt = <span class="hljs-number">0</span>;<br>    <span class="hljs-type">int</span> dx[<span class="hljs-number">4</span>] = &#123;<span class="hljs-number">0</span>, <span class="hljs-number">-1</span>, <span class="hljs-number">0</span>, <span class="hljs-number">1</span>&#125;, dy[<span class="hljs-number">4</span>] = &#123;<span class="hljs-number">-1</span>, <span class="hljs-number">0</span>, <span class="hljs-number">1</span>, <span class="hljs-number">0</span>&#125;;<br>    <span class="hljs-type">int</span> area = <span class="hljs-number">0</span>;<br>    q[<span class="hljs-number">0</span>] = &#123;sx, sy&#125;;<br>    st[sx][sy] = <span class="hljs-literal">true</span>;<br>    <span class="hljs-keyword">while</span>(hh &lt;= tt)&#123;<br>        PII t = q[hh ++];<br>        area ++;<br>        <span class="hljs-keyword">for</span>(<span class="hljs-type">int</span> i = <span class="hljs-number">0</span>; i &lt; <span class="hljs-number">4</span>; i ++)&#123;<br>            <span class="hljs-type">int</span> a = t.x + dx[i], b = t.y + dy[i];<br>            <span class="hljs-keyword">if</span>(a &lt; <span class="hljs-number">0</span> || a &gt;= n || b &lt; <span class="hljs-number">0</span> || b &gt;= m) <span class="hljs-keyword">continue</span>;<br>            <span class="hljs-keyword">if</span>(st[a][b])    <span class="hljs-keyword">continue</span>;<br>            <span class="hljs-keyword">if</span>(g[t.x][t.y] &gt;&gt; i &amp; <span class="hljs-number">1</span>)    <span class="hljs-keyword">continue</span>;<span class="hljs-comment">//判断有没有围墙</span><br>            q[++ tt] = &#123;a, b&#125;;<br>            st[a][b] = <span class="hljs-literal">true</span>;<br>        &#125;<br>        <br>    &#125;<br>    <span class="hljs-keyword">return</span> area;<br>&#125;<br><br><span class="hljs-function"><span class="hljs-type">int</span> <span class="hljs-title">main</span><span class="hljs-params">()</span></span><br><span class="hljs-function"></span>&#123;<br>    cin &gt;&gt; n &gt;&gt; m;<br>    <span class="hljs-keyword">for</span>(<span class="hljs-type">int</span> i = <span class="hljs-number">0</span>; i &lt; n; i ++)<br>        <span class="hljs-keyword">for</span>(<span class="hljs-type">int</span> j = <span class="hljs-number">0</span>; j &lt; m; j ++)<br>            cin &gt;&gt; g[i][j];<br>    <span class="hljs-type">int</span> cnt = <span class="hljs-number">0</span>, area = <span class="hljs-number">0</span>;<br>    <span class="hljs-keyword">for</span>(<span class="hljs-type">int</span> i = <span class="hljs-number">0</span>; i &lt; n; i ++)<br>        <span class="hljs-keyword">for</span>(<span class="hljs-type">int</span> j = <span class="hljs-number">0</span>; j &lt; m; j ++)<br>            <span class="hljs-keyword">if</span>(!st[i][j])&#123;<br>                area = <span class="hljs-built_in">max</span>(area, <span class="hljs-built_in">bfs</span>(i, j));<br>                cnt ++;<br>            &#125;<br>            <br>    cout &lt;&lt; cnt &lt;&lt; endl;<br>    cout &lt;&lt; area &lt;&lt; endl;<br>    <span class="hljs-keyword">return</span> <span class="hljs-number">0</span>;<br>&#125;<br></code></pre></td></tr></table></figure>
+
+
+
+
+
+<h4 id="3-1106-山峰和山谷"><a href="#3-1106-山峰和山谷" class="headerlink" title="3.1106. 山峰和山谷"></a>3.1106. <a target="_blank" rel="noopener" href="https://www.acwing.com/problem/content/1108/">山峰和山谷</a></h4><figure class="highlight latex"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br></pre></td><td class="code"><pre><code class="hljs latex">FGD小朋友特别喜欢爬山，在爬山的时候他就在研究山峰和山谷。<br><br>为了能够对旅程有一个安排，他想知道山峰和山谷的数量。<br><br>给定一个地图，为FGD想要旅行的区域，地图被分为 n×n 的网格，每个格子 (i,j) 的高度 w(i,j) 是给定的。<br><br>若两个格子有公共顶点，那么它们就是相邻的格子，如与 (i,j) 相邻的格子有(i−1,j−1),(i−1,j),(i−1,j+1),(i,j−1),(i,j+1),(i+1,j−1),(i+1,j),(i+1,j+1)。<br><br>我们定义一个格子的集合 S 为山峰（山谷）当且仅当：<br><br>S 的所有格子都有相同的高度。<br>S 的所有格子都连通。<br>对于 s 属于 S，与 s 相邻的 s′ 不属于 S，都有 ws&gt;ws′（山峰），或者 ws&lt;ws′（山谷）。<br>如果周围不存在相邻区域，则同时将其视为山峰和山谷。<br>你的任务是，对于给定的地图，求出山峰和山谷的数量，如果所有格子都有相同的高度，那么整个地图即是山峰，又是山谷。<br><br>输入格式<br>第一行包含一个正整数 n，表示地图的大小。<br><br>接下来一个 n×n 的矩阵，表示地图上每个格子的高度 w。<br><br>输出格式<br>共一行，包含两个整数，表示山峰和山谷的数量。<br><br>数据范围<br>1≤n≤1000,<br>0≤w≤109<br>输入样例1：<br>5<br>8 8 8 7 7<br>7 7 8 8 7<br>7 7 7 7 7<br>7 8 8 7 8<br>7 8 8 8 8<br>输出样例1：<br>2 1<br>输入样例2：<br>5<br>5 7 8 3 1<br>5 5 7 6 6<br>6 6 6 2 8<br>5 7 2 5 8<br>7 1 0 1 7<br>输出样例2：<br>3 3<br></code></pre></td></tr></table></figure>
+
+
+
+<p>这道题需要注意理解题意，即一片连通块没有比它高的就是山峰，然后就是山谷了，而且如果全部高度都一模一样，那么既是山峰也是山谷。</p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br></pre></td><td class="code"><pre><code class="hljs cpp"><span class="hljs-meta">#<span class="hljs-keyword">include</span> <span class="hljs-string">&lt;cstring&gt;</span></span><br><span class="hljs-meta">#<span class="hljs-keyword">include</span> <span class="hljs-string">&lt;iostream&gt;</span></span><br><span class="hljs-meta">#<span class="hljs-keyword">include</span> <span class="hljs-string">&lt;algorithm&gt;</span></span><br><br><span class="hljs-meta">#<span class="hljs-keyword">define</span> x first</span><br><span class="hljs-meta">#<span class="hljs-keyword">define</span> y second</span><br><br><span class="hljs-keyword">using</span> <span class="hljs-keyword">namespace</span> std;<br><br><span class="hljs-keyword">typedef</span> pair&lt;<span class="hljs-type">int</span>, <span class="hljs-type">int</span>&gt; PII;<br><br><span class="hljs-type">const</span> <span class="hljs-type">int</span> N = <span class="hljs-number">1010</span>, M = N * N;<br><br><span class="hljs-type">int</span> n;<br><span class="hljs-type">int</span> h[N][N];<br>PII q[M];<br><span class="hljs-type">bool</span> st[N][N];<br><span class="hljs-function"><span class="hljs-type">void</span> <span class="hljs-title">bfs</span><span class="hljs-params">(<span class="hljs-type">int</span> sx, <span class="hljs-type">int</span> sy, <span class="hljs-type">bool</span>&amp; has_higher, <span class="hljs-type">bool</span>&amp; has_lower)</span></span>&#123;<br>    <span class="hljs-type">int</span> hh = <span class="hljs-number">0</span>, tt = <span class="hljs-number">0</span>;<br>    q[<span class="hljs-number">0</span>] = &#123;sx, sy&#125;;<br>    st[sx][sy] = <span class="hljs-literal">true</span>;<br>    <span class="hljs-keyword">while</span>(hh &lt;= tt)&#123;<br>        PII t = q[hh ++];<br>        <span class="hljs-keyword">for</span>(<span class="hljs-type">int</span> i = t.x - <span class="hljs-number">1</span>; i &lt;= t.x + <span class="hljs-number">1</span>; i ++)<br>            <span class="hljs-keyword">for</span>(<span class="hljs-type">int</span> j = t.y - <span class="hljs-number">1</span>; j &lt;= t.y + <span class="hljs-number">1</span>; j ++)&#123;<br>                <span class="hljs-keyword">if</span>(i == t.x &amp;&amp; j == t.y)    <span class="hljs-keyword">continue</span>;<br>                <span class="hljs-keyword">if</span>(i &lt; <span class="hljs-number">0</span> || i &gt;= n || j &lt; <span class="hljs-number">0</span> || j &gt;= n)  <span class="hljs-keyword">continue</span>;<br>                <span class="hljs-keyword">if</span>(h[i][j] != h[t.x][t.y])&#123;<br>                    <span class="hljs-keyword">if</span>(h[i][j] &gt;= h[t.x][t.y])  has_higher = <span class="hljs-literal">true</span>;<br>                    <span class="hljs-keyword">else</span> has_lower = <span class="hljs-literal">true</span>;<br>                &#125;<br>                <span class="hljs-keyword">else</span> <span class="hljs-keyword">if</span>(!st[i][j])&#123;<br>                    q[++ tt] = &#123;i, j&#125;;<br>                    st[i][j] = <span class="hljs-literal">true</span>;<br>                &#125;<br>            &#125;<br>    &#125;<br>&#125;<br><br><span class="hljs-function"><span class="hljs-type">int</span> <span class="hljs-title">main</span><span class="hljs-params">()</span></span><br><span class="hljs-function"></span>&#123;<br>    <span class="hljs-built_in">scanf</span>(<span class="hljs-string">&quot;%d&quot;</span>, &amp;n);<br><br>    <span class="hljs-keyword">for</span> (<span class="hljs-type">int</span> i = <span class="hljs-number">0</span>; i &lt; n; i ++ )<br>        <span class="hljs-keyword">for</span> (<span class="hljs-type">int</span> j = <span class="hljs-number">0</span>; j &lt; n; j ++ )<br>            <span class="hljs-built_in">scanf</span>(<span class="hljs-string">&quot;%d&quot;</span>, &amp;h[i][j]);<br><br>    <span class="hljs-type">int</span> peak = <span class="hljs-number">0</span>, valley = <span class="hljs-number">0</span>;<br>    <span class="hljs-keyword">for</span> (<span class="hljs-type">int</span> i = <span class="hljs-number">0</span>; i &lt; n; i ++ )<br>        <span class="hljs-keyword">for</span> (<span class="hljs-type">int</span> j = <span class="hljs-number">0</span>; j &lt; n; j ++ )<br>            <span class="hljs-keyword">if</span> (!st[i][j])<br>            &#123;<br>                <span class="hljs-type">bool</span> has_higher = <span class="hljs-literal">false</span>, has_lower = <span class="hljs-literal">false</span>;<br>                <span class="hljs-built_in">bfs</span>(i, j, has_higher, has_lower);<br>                <span class="hljs-keyword">if</span> (!has_higher) peak ++ ;<br>                <span class="hljs-keyword">if</span> (!has_lower) valley ++ ;<br>            &#125;<br><br>    <span class="hljs-built_in">printf</span>(<span class="hljs-string">&quot;%d %d\n&quot;</span>, peak, valley);<br><br>    <span class="hljs-keyword">return</span> <span class="hljs-number">0</span>;<br>&#125;<br></code></pre></td></tr></table></figure>
+
+
+                
+              </div>
+            
+            <hr/>
+            <div>
+              <div class="post-metas my-3">
+  
+    <div class="post-meta mr-3 d-flex align-items-center">
+      <i class="iconfont icon-category"></i>
+      
+
+<span class="category-chains">
+  
+  
+    
+      <span class="category-chain">
+        
+  <a href="/categories/%E7%AE%97%E6%B3%95%E5%AD%A6%E4%B9%A0/" class="category-chain-item">算法学习</a>
+  
+  
+
+      </span>
+    
+  
+</span>
+
+    </div>
+  
+  
+    <div class="post-meta">
+      <i class="iconfont icon-tags"></i>
+      
+        <a href="/tags/%E6%80%BB%E7%BB%93%E7%B1%BB/">#总结类</a>
+      
+    </div>
+  
+</div>
+
+
+              
+  
+
+  <div class="license-box my-3">
+    <div class="license-title">
+      <div>BFS中floodfill算法总结</div>
+      <div>http://example.com/2022/08/02/BFS中floodfill算法总结/</div>
+    </div>
+    <div class="license-meta">
+      
+        <div class="license-meta-item">
+          <div>作者</div>
+          <div>zyy</div>
+        </div>
+      
+      
+        <div class="license-meta-item license-meta-date">
+          <div>发布于</div>
+          <div>2022年8月2日</div>
+        </div>
+      
+      
+      <div class="license-meta-item">
+        <div>许可协议</div>
+        <div>
+          
+            
+            
+              <a target="_blank" href="https://creativecommons.org/licenses/by/4.0/">
+              <span class="hint--top hint--rounded" aria-label="BY - 署名">
+                <i class="iconfont icon-by"></i>
+              </span>
+              </a>
+            
+          
+        </div>
+      </div>
+    </div>
+    <div class="license-icon iconfont"></div>
+  </div>
+
+
+
+              
+                <div class="post-prevnext my-3">
+                  <article class="post-prev col-6">
+                    
+                    
+                      <a href="/2022/08/05/DFS-0-1/" title="DFS_0.1">
+                        <i class="iconfont icon-arrowleft"></i>
+                        <span class="hidden-mobile">DFS_0.1</span>
+                        <span class="visible-mobile">上一篇</span>
+                      </a>
+                    
+                  </article>
+                  <article class="post-next col-6">
+                    
+                    
+                      <a href="/2022/08/01/docker%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B01/" title="docker学习笔记1">
+                        <span class="hidden-mobile">docker学习笔记1</span>
+                        <span class="visible-mobile">下一篇</span>
+                        <i class="iconfont icon-arrowright"></i>
+                      </a>
+                    
+                  </article>
+                </div>
+              
+            </div>
+
+            
+          </article>
+        </div>
+      </div>
+    </div>
+
+    <div class="side-col d-none d-lg-block col-lg-2">
+      
+  <aside class="sidebar" style="margin-left: -1rem">
+    <div id="toc">
+  <p class="toc-header"><i class="iconfont icon-list"></i>&nbsp;目录</p>
+  <div class="toc-body" id="toc-body"></div>
+</div>
+
+
+
+  </aside>
+
+
+    </div>
+  </div>
+</div>
+
+
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+
+
+
+
+    
+
+    
+      <a id="scroll-top-button" aria-label="TOP" href="#" role="button">
+        <i class="iconfont icon-arrowup" aria-hidden="true"></i>
+      </a>
+    
+
+    
+      <div class="modal fade" id="modalSearch" tabindex="-1" role="dialog" aria-labelledby="ModalLabel"
+     aria-hidden="true">
+  <div class="modal-dialog modal-dialog-scrollable modal-lg" role="document">
+    <div class="modal-content">
+      <div class="modal-header text-center">
+        <h4 class="modal-title w-100 font-weight-bold">搜索</h4>
+        <button type="button" id="local-search-close" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body mx-3">
+        <div class="md-form mb-5">
+          <input type="text" id="local-search-input" class="form-control validate">
+          <label data-error="x" data-success="v" for="local-search-input">关键词</label>
+        </div>
+        <div class="list-group" id="local-search-result"></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+    
+
+    
+  </main>
+
+  <footer>
+    <div class="footer-inner">
+  
+    <div class="footer-content">
+       <a href="https://hexo.io" target="_blank" rel="nofollow noopener"><span>Hexo</span></a> <i class="iconfont icon-love"></i> <a href="https://github.com/fluid-dev/hexo-theme-fluid" target="_blank" rel="nofollow noopener"><span>Fluid</span></a> 
+    </div>
+  
+  
+  
+  
+</div>
+
+  </footer>
+
+  <!-- Scripts -->
+  
+  <script  src="https://lib.baomitu.com/nprogress/0.2.0/nprogress.min.js" ></script>
+  <link  rel="stylesheet" href="https://lib.baomitu.com/nprogress/0.2.0/nprogress.min.css" />
+
+  <script>
+    NProgress.configure({"showSpinner":false,"trickleSpeed":100})
+    NProgress.start()
+    window.addEventListener('load', function() {
+      NProgress.done();
+    })
+  </script>
+
+
+<script  src="https://lib.baomitu.com/jquery/3.6.0/jquery.min.js" ></script>
+<script  src="https://lib.baomitu.com/twitter-bootstrap/4.6.1/js/bootstrap.min.js" ></script>
+<script  src="/js/events.js" ></script>
+<script  src="/js/plugins.js" ></script>
+
+
+  <script  src="https://lib.baomitu.com/typed.js/2.0.12/typed.min.js" ></script>
+  <script>
+    (function (window, document) {
+      var typing = Fluid.plugins.typing;
+      var subtitle = document.getElementById('subtitle');
+      if (!subtitle || !typing) {
+        return;
+      }
+      var text = subtitle.getAttribute('data-typed-text');
+      
+        typing(text);
+      
+    })(window, document);
+  </script>
+
+
+
+
+  
+    <script  src="/js/img-lazyload.js" ></script>
+  
+
+
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/tocbot/4.18.2/tocbot.min.js', function() {
+    var toc = jQuery('#toc');
+    if (toc.length === 0 || !window.tocbot) { return; }
+    var boardCtn = jQuery('#board-ctn');
+    var boardTop = boardCtn.offset().top;
+
+    window.tocbot.init({
+      tocSelector     : '#toc-body',
+      contentSelector : '.markdown-body',
+      headingSelector : CONFIG.toc.headingSelector || 'h1,h2,h3,h4,h5,h6',
+      linkClass       : 'tocbot-link',
+      activeLinkClass : 'tocbot-active-link',
+      listClass       : 'tocbot-list',
+      isCollapsedClass: 'tocbot-is-collapsed',
+      collapsibleClass: 'tocbot-is-collapsible',
+      collapseDepth   : CONFIG.toc.collapseDepth || 0,
+      scrollSmooth    : true,
+      headingsOffset  : -boardTop
+    });
+    if (toc.find('.toc-list-item').length > 0) {
+      toc.css('visibility', 'visible');
+    }
+  });
+</script>
+
+
+  <script src=https://lib.baomitu.com/clipboard.js/2.0.10/clipboard.min.js></script>
+
+  <script>Fluid.plugins.codeWidget();</script>
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/anchor-js/4.3.1/anchor.min.js', function() {
+    window.anchors.options = {
+      placement: CONFIG.anchorjs.placement,
+      visible  : CONFIG.anchorjs.visible
+    };
+    if (CONFIG.anchorjs.icon) {
+      window.anchors.options.icon = CONFIG.anchorjs.icon;
+    }
+    var el = (CONFIG.anchorjs.element || 'h1,h2,h3,h4,h5,h6').split(',');
+    var res = [];
+    for (var item of el) {
+      res.push('.markdown-body > ' + item.trim());
+    }
+    if (CONFIG.anchorjs.placement === 'left') {
+      window.anchors.options.class = 'anchorjs-link-left';
+    }
+    window.anchors.add(res.join(', '));
+  });
+</script>
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/fancybox/3.5.7/jquery.fancybox.min.js', function() {
+    Fluid.plugins.fancyBox();
+  });
+</script>
+
+
+  <script>Fluid.plugins.imageCaption();</script>
+
+  <script  src="/js/local-search.js" ></script>
+
+
+
+
+
+<!-- 主题的启动项，将它保持在最底部 -->
+<!-- the boot of the theme, keep it at the bottom -->
+<script  src="/js/boot.js" ></script>
+
+
+  
+
+  <noscript>
+    <div class="noscript-warning">博客在允许 JavaScript 运行的环境下浏览效果更佳</div>
+  </noscript>
+</body>
+</html>
