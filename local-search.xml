@@ -4,6 +4,31 @@
   
   
   <entry>
+    <title>简单配置服务器和git学习笔记</title>
+    <link href="/2023/01/13/git/"/>
+    <url>/2023/01/13/git/</url>
+    
+    <content type="html"><![CDATA[<h3 id="1-日常学习中的服务器相关知识"><a href="#1-日常学习中的服务器相关知识" class="headerlink" title="1.日常学习中的服务器相关知识"></a>1.日常学习中的服务器相关知识</h3><h4 id="1-1远程登录服务器基本用法"><a href="#1-1远程登录服务器基本用法" class="headerlink" title="1.1远程登录服务器基本用法"></a>1.1远程登录服务器基本用法</h4><p>在任何一个Teminal都可以免密登录到租的云服务器，以阿里云为例，可以直接通过下面的命令</p><figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs shell">ssh root@xxx.xxx.xxx.xxx  # xxx.xxx.xxx.xxx替换成新服务器的公网IP<br></code></pre></td></tr></table></figure><p>第一次登录时会提示：</p><figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><code class="hljs shell">The authenticity of host &#x27;&#x27; can&#x27;t be established.<br>ECDSA key fingerprint is SHA256:iy237yysfCe013/l+kpDGfEG9xxHxm0dnxnAbJTPpG8.<br>Are you sure you want to continue connecting (yes/no/[fingerprint])?<br></code></pre></td></tr></table></figure><p>输入yes，然后回车即可</p><p>这样会将该服务器的信息记录在**~&#x2F;.ssh&#x2F;known_hosts**文件中</p><p>然后输入密码即可登录到远程服务器</p><p>登录到新服务器之后可以创建一个新的用户来进行操作，并给这个用户提供root权限</p><figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><code class="hljs shell">adduser zyy  # 创建用户zyy<br>usermod -aG sudo zyy  # 给用户zyy分配sudo权限<br></code></pre></td></tr></table></figure><h4 id="1-2配置免密登录"><a href="#1-2配置免密登录" class="headerlink" title="1.2配置免密登录"></a>1.2配置免密登录</h4><p>首先我们需要进入到.ssh文件夹，然后创建一个config文件用来配置我们的登录</p><p>具体操作如下</p><figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><code class="hljs shell">cd .ssh/<br>touch config<br>vim config<br></code></pre></td></tr></table></figure><p>然后在config中进行如下配置</p><figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><code class="hljs shell">Host myserver1#你给你的服务器取的别名<br>    HostName IP #地址或域名<br>    User #创建的用户名<br></code></pre></td></tr></table></figure><p>之后再使用服务器时，可以直接使用别名myserver1</p><p><strong>密钥登录</strong><br>创建密钥：</p><figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs shell">ssh-keygen<br></code></pre></td></tr></table></figure><p>然后一直回车即可。</p><p>执行结束后，~&#x2F;.ssh&#x2F;目录下会多两个文件：</p><p>id_rsa：私钥<br>id_rsa.pub：公钥<br>之后想免密码登录哪个服务器，就将公钥传给哪个服务器即可。</p><p>例如，想免密登录myserver服务器。则将公钥中的内容，复制到myserver中的~&#x2F;.ssh&#x2F;authorized_keys文件里即可。</p><p>可以使用如下命令一键添加公钥：</p><figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs shell">ssh-copy-id myserver<br></code></pre></td></tr></table></figure><p>执行命令</p><p>然后就可以直接通过命令登录，无须输入密码</p><figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs shell">ssh myserver<br></code></pre></td></tr></table></figure><h3 id="2-git的基本使用方法"><a href="#2-git的基本使用方法" class="headerlink" title="2.git的基本使用方法"></a>2.git的基本使用方法</h3><h4 id="2-1-git-init"><a href="#2-1-git-init" class="headerlink" title="2.1 git init"></a>2.1 git init</h4><p>用于在目录中创建新的Git仓库，可以用 <strong>git init</strong>, 然后就会自动初始化，并生成一个.git文件夹</p><h4 id="2-2-git-status"><a href="#2-2-git-status" class="headerlink" title="2.2 git status"></a>2.2 git status</h4><p>查看当前工作区的状态，若有文件未加到暂存区里面，会提示你用git add命令把他加入暂存区</p><img src="/2023/01/13/git/image-20230113185807445.png" class title="image-20230113185807445"><h4 id="2-3-git-add"><a href="#2-3-git-add" class="headerlink" title="2.3 git add"></a>2.3 git add</h4><p>git add是把工作区的文件添加到暂存区，可以单独添加文件，使用git add +文件名，也可以添加所有文件 git add .</p><p>添加之后再查看状态就是如下所示了</p><img src="/2023/01/13/git/image-20230113190016804.png" class title="image-20230113190016804"><h4 id="2-4-git-rm-–catched"><a href="#2-4-git-rm-–catched" class="headerlink" title="2.4 git rm –catched"></a>2.4 git rm –catched</h4><p>我们可以看上图的命令提示，提示说可以使用git rm –cached<file> 来恢复文件到工作区，我们使用一下，发现又回到了原来没加入暂存区的状态了</file></p><img src="/2023/01/13/git/image-20230113190158272.png" class title="image-20230113190158272"><img src="/2023/01/13/git/image-20230113190234126.png" class title="image-20230113190234126"><h4 id="2-5-git-commit"><a href="#2-5-git-commit" class="headerlink" title="2.5 git commit"></a>2.5 git commit</h4><p>git commit 可以吧暂存区的内容发布到本地仓库，便于后期的版本回溯，git commit 如果不加入任何参数，就会默认进入到nano的编辑模式，一种类似于vim的工作状态，在这里你可以给你的commit增加备注消息，更常见的方法是，直接使用 git commit -m “你的备注”</p><img src="/2023/01/13/git/image-20230113190640934.png" class title="image-20230113190640934"><img src="/2023/01/13/git/image-20230113190659670.png" class title="image-20230113190659670"><h4 id="2-6-对接GitHub"><a href="#2-6-对接GitHub" class="headerlink" title="2.6 对接GitHub"></a>2.6 对接GitHub</h4><p>首先去GitHub创建一个空仓库</p><img src="/2023/01/13/git/image-20230113190825842.png" class title="image-20230113190825842"><p>按照上面的提示push一个已经存在的本地仓库上去，我们需要使用</p><figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs shell">git remote add origin &lt;仓库地址&gt;<br></code></pre></td></tr></table></figure><p>接着可以使用</p><figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs shell">git remote –v 查看远程仓库的地址<br></code></pre></td></tr></table></figure><img src="/2023/01/13/git/image-20230113191407367.png" class title="image-20230113191407367"><p>接下来，由于一些原因，GitHub需要将默认分支改为main分支，使用下面指令进行更改</p><figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs shell">git branch -M main<br></code></pre></td></tr></table></figure><img src="/2023/01/13/git/image-20230113191521171.png" class title="image-20230113191521171"><p>当我们按照上面创建仓库的提示，将现有仓库push上去的时候，会提示我们输入用户名和密码，所以我们不推荐这种方式，我们建议使用ssh创建并push上去</p><img src="/2023/01/13/git/image-20230113191851501.png" class title="image-20230113191851501"><p>我们下面换ssh的操作试一下，使用<strong>git remote set-url origin &lt;地址&gt;</strong>,发现就不需要git用户名和密码了</p><img src="/2023/01/13/git/image-20230113192211845.png" class title="image-20230113192211845"><p>这一步的前提是你需要先将你的ssh的公钥传到你的GitHub个人设置里面，具体怎么生成上面讲解git已经有操作了，可以去上面操作一下</p><p>总结一下就是如下操作</p><img src="/2023/01/13/git/image-20230113192430972.png" class title="image-20230113192430972"><h4 id="2-7-git-clone"><a href="#2-7-git-clone" class="headerlink" title="2.7 git clone"></a>2.7 git clone</h4><p>git clone — 将一个远程仓库克隆到本地</p><h4 id="2-8-git-pull"><a href="#2-8-git-pull" class="headerlink" title="2.8 git pull"></a>2.8 git pull</h4><p>git pull — 从远程仓库获取代码合并到本地仓</p>]]></content>
+    
+    
+    <categories>
+      
+      <category>Linux</category>
+      
+    </categories>
+    
+    
+    <tags>
+      
+      <tag>git</tag>
+      
+    </tags>
+    
+  </entry>
+  
+  
+  
+  <entry>
     <title>状态压缩DP</title>
     <link href="/2022/09/03/%E7%8A%B6%E6%80%81%E5%8E%8B%E7%BC%A9DP/"/>
     <url>/2022/09/03/%E7%8A%B6%E6%80%81%E5%8E%8B%E7%BC%A9DP/</url>
@@ -171,31 +196,6 @@
     <tags>
       
       <tag>docker</tag>
-      
-    </tags>
-    
-  </entry>
-  
-  
-  
-  <entry>
-    <title>git学习笔记</title>
-    <link href="/2022/08/01/git/"/>
-    <url>/2022/08/01/git/</url>
-    
-    <content type="html"><![CDATA[<p>tetstetstdttd</p><img src="/2022/08/01/git/image-20230113151235511.png" class title="image-20230113151235511">]]></content>
-    
-    
-    <categories>
-      
-      <category>Linux</category>
-      
-    </categories>
-    
-    
-    <tags>
-      
-      <tag>git</tag>
       
     </tags>
     
