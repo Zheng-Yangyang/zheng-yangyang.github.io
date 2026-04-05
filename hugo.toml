@@ -51,5 +51,9 @@ paginate = 10
     url = "/search/"
     weight = 40
 
+[taxonomies]
+  tag = "tags"
+  category = "categories"
+
 [outputs]
   home = ["HTML", "RSS", "JSON"]
