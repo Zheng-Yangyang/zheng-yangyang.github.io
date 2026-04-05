@@ -1,0 +1,44 @@
+<svg width="640" height="300" xmlns="http://www.w3.org/2000/svg" font-family="monospace">
+  <rect width="640" height="300" fill="#1e1e2e" rx="12"/>
+  <text x="320" y="32" text-anchor="middle" fill="#cdd6f4" font-size="14" font-weight="bold">Channel 通信模型</text>
+
+  <!-- Sender -->
+  <rect x="30" y="110" width="130" height="80" rx="8" fill="#313244" stroke="#89b4fa" stroke-width="1.5"/>
+  <text x="95" y="143" text-anchor="middle" fill="#89b4fa" font-size="12" font-weight="bold">Goroutine A</text>
+  <text x="95" y="163" text-anchor="middle" fill="#cdd6f4" font-size="11">发送方</text>
+  <text x="95" y="181" text-anchor="middle" fill="#a6e3a1" font-size="11">ch &lt;- value</text>
+
+  <!-- Arrow send -->
+  <line x1="160" y1="150" x2="210" y2="150" stroke="#a6e3a1" stroke-width="2" marker-end="url(#arr)"/>
+
+  <!-- Channel buffer -->
+  <rect x="210" y="90" width="220" height="120" rx="8" fill="#181825" stroke="#f9e2af" stroke-width="1.5"/>
+  <text x="320" y="112" text-anchor="middle" fill="#f9e2af" font-size="12" font-weight="bold">Channel (buffered=3)</text>
+  <rect x="225" y="122" width="55" height="36" rx="4" fill="#313244" stroke="#f9e2af" stroke-width="1"/>
+  <text x="252" y="145" text-anchor="middle" fill="#cdd6f4" font-size="12">v1</text>
+  <rect x="287" y="122" width="55" height="36" rx="4" fill="#313244" stroke="#f9e2af" stroke-width="1"/>
+  <text x="314" y="145" text-anchor="middle" fill="#cdd6f4" font-size="12">v2</text>
+  <rect x="349" y="122" width="55" height="36" rx="4" fill="#45475a" stroke="#f9e2af" stroke-width="1" stroke-dasharray="3,3"/>
+  <text x="376" y="145" text-anchor="middle" fill="#6c7086" font-size="12">空</text>
+  <text x="320" y="196" text-anchor="middle" fill="#6c7086" font-size="10">len=2  cap=3</text>
+
+  <!-- Arrow recv -->
+  <line x1="430" y1="150" x2="480" y2="150" stroke="#a6e3a1" stroke-width="2" marker-end="url(#arr)"/>
+
+  <!-- Receiver -->
+  <rect x="480" y="110" width="130" height="80" rx="8" fill="#313244" stroke="#cba6f7" stroke-width="1.5"/>
+  <text x="545" y="143" text-anchor="middle" fill="#cba6f7" font-size="12" font-weight="bold">Goroutine B</text>
+  <text x="545" y="163" text-anchor="middle" fill="#cdd6f4" font-size="11">接收方</text>
+  <text x="545" y="181" text-anchor="middle" fill="#a6e3a1" font-size="11">v := &lt;-ch</text>
+
+  <!-- Rule box -->
+  <rect x="30" y="230" width="580" height="48" rx="6" fill="#181825" stroke="#45475a" stroke-width="1"/>
+  <text x="320" y="250" text-anchor="middle" fill="#f9e2af" font-size="11" font-weight="bold">规则：</text>
+  <text x="320" y="268" text-anchor="middle" fill="#6c7086" font-size="11">buffer 满时发送阻塞 · buffer 空时接收阻塞 · 无 buffer 则发送/接收必须同时就绪</text>
+
+  <defs>
+    <marker id="arr" markerWidth="8" markerHeight="8" refX="6" refY="3" orient="auto">
+      <path d="M0,0 L0,6 L8,3 z" fill="#a6e3a1"/>
+    </marker>
+  </defs>
+</svg>
