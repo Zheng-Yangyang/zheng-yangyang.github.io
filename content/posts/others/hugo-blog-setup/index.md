@@ -3,6 +3,7 @@ title: "用 Hugo + GitHub Pages 搭建个人博客"
 date: 2026-04-05
 draft: false
 tags: ["Hugo", "GitHub Pages", "建站"]
+categories: ["others"]
 description: "记录从零搭建静态博客的完整流程，包含自动部署配置。"
 ---
 

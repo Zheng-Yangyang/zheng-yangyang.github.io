@@ -3,6 +3,7 @@ title: "Hello World"
 date: 2026-04-05
 draft: false
 tags: ["随笔"]
+categories: ["others"]
 description: "第一篇博客文章"
 ---
 
