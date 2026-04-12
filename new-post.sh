@@ -10,7 +10,7 @@ echo "=============================="
 # 选择分类
 echo ""
 echo "请选择分类："
-categories=("golang" "agent" "llm" "infra" "web")
+categories=("golang" "agent" "llm" "infra" "web" "interview-preparation")
 for i in "${!categories[@]}"; do
   echo "  $((i+1)). ${categories[$i]}"
 done
