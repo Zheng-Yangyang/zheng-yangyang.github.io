@@ -15,7 +15,7 @@ for i in "${!categories[@]}"; do
   echo "  $((i+1)). ${categories[$i]}"
 done
 echo ""
-read -p "输入编号 (1-${#categories[@]}): " cat_choice
+read -e -p "输入编号 (1-${#categories[@]}): " cat_choice
 
 if ! [[ "$cat_choice" =~ ^[1-9]$ ]] || [ "$cat_choice" -gt "${#categories[@]}" ]; then
   echo "无效选择，退出。"
@@ -25,15 +25,15 @@ category="${categories[$((cat_choice-1))]}"
 
 # 输入文章信息
 echo ""
-read -p "文章标题（中文或英文）: " title
+read -e -p "文章标题（中文或英文）: " title
 if [ -z "$title" ]; then
   echo "标题不能为空，退出。"
   exit 1
 fi
 
-read -p "文章简介（一句话描述，可回车跳过）: " description
+read -e -p "文章简介（一句话描述，可回车跳过）: " description
 
-read -p "标签（多个用逗号分隔，如 goroutine,channel）: " tags_raw
+read -e -p "标签（多个用逗号分隔，如 goroutine,channel）: " tags_raw
 
 # 生成目录名（取标题，转小写，空格换成-，去掉特殊字符）
 dir_name=$(echo "$title" | tr '[:upper:]' '[:lower:]' | sed 's/[[:space:]]/-/g' | sed 's/[^a-z0-9-]//g' | sed 's/-\+/-/g' | sed 's/^-//;s/-$//')
@@ -53,7 +53,7 @@ echo "  目录：$post_dir/"
 [ -n "$description" ] && echo "  简介：$description"
 [ -n "$tags_raw" ] && echo "  标签：$tags_raw"
 echo "------------------------------"
-read -p "确认创建？(y/n): " confirm
+read -e -p "确认创建？(y/n): " confirm
 
 if [ "$confirm" != "y" ] && [ "$confirm" != "Y" ]; then
   echo "已取消。"
@@ -116,7 +116,7 @@ echo ""
 echo "用 Typora 打开："
 echo "   open -a Typora $post_dir/index.md"
 echo ""
-read -p "现在用 Typora 打开？(y/n): " open_now
+read -e -p "现在用 Typora 打开？(y/n): " open_now
 if [ "$open_now" = "y" ] || [ "$open_now" = "Y" ]; then
   open -a Typora "$post_dir/index.md"
 fi

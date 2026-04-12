@@ -20,7 +20,7 @@ if [ -z "$(git status --short)" ]; then
 fi
 
 # 输入提交信息
-read -p "提交说明（回车跳过则自动生成）：" msg
+read -e -p "提交说明（回车跳过则自动生成）：" msg
 
 if [ -z "$msg" ]; then
   # 自动生成：统计新增/修改的文章
@@ -34,7 +34,7 @@ fi
 
 echo ""
 echo "👉 提交信息：$msg"
-read -p "确认发布？(y/n): " confirm
+read -e -p "确认发布？(y/n): " confirm
 
 if [ "$confirm" != "y" ] && [ "$confirm" != "Y" ]; then
   echo "已取消。"
