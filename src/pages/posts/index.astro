@@ -1,0 +1,6 @@
+---
+import Base from '../../layouts/Base.astro';
+import PostList from '../../components/PostList.astro';
+import {posts,categories} from '../../lib/posts';
+---
+<Base title="全部笔记 · Yangyang"><section class="section-wrap listing"><span class="eyebrow">THE NOTEBOOK / {posts.length} 篇笔记</span><h1>思考的痕迹。</h1><p class="page-deck">从 AI 到工程，从问题到理解。</p><div class="category-pills">{categories.map(c=><a href={`/posts/${c.id}/`}>{c.name}<span>{posts.filter(p=>p.category===c.id).length}</span></a>)}</div><PostList posts={posts}/></section></Base>

@@ -1,0 +1,5 @@
+---
+import Base from '../../layouts/Base.astro';
+import {posts,tags,tagSlug} from '../../lib/posts';
+---
+<Base title="主题索引 · Yangyang"><section class="section-wrap listing"><span class="eyebrow">INDEX OF IDEAS</span><h1>让想法，产生连接。</h1><p class="page-deck">沿着一个关键词，发现另一篇笔记。</p><div class="tag-cloud">{tags.map(tag=><a href={`/tags/${tagSlug(tag)}/`}>{tag}<sup>{posts.filter(p=>p.tags.includes(tag)).length}</sup><span>↗</span></a>)}</div></section></Base>

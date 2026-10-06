@@ -1,0 +1,3 @@
+import {posts} from '../lib/posts';
+const escape=(s:string)=>s.replace(/[<>&"']/g,c=>({'<':'&lt;','>':'&gt;','&':'&amp;','"':'&quot;',"'":'&apos;'}[c]!));
+export function GET(){return new Response(`<?xml version="1.0" encoding="utf-8"?><rss version="2.0"><channel><title>Yangyang's Blog</title><link>https://zheng-yangyang.github.io/</link><description>记录技术笔记与思考</description><language>zh-cn</language>${posts.map(p=>`<item><title>${escape(p.title)}</title><link>https://zheng-yangyang.github.io${p.url}</link><guid>https://zheng-yangyang.github.io${p.url}</guid><description>${escape(p.description)}</description><pubDate>${p.date.toUTCString()}</pubDate></item>`).join('')}</channel></rss>`,{headers:{'Content-Type':'application/xml'}})}

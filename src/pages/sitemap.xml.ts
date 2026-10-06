@@ -1,0 +1,2 @@
+import {posts,categories,tags,tagSlug} from '../lib/posts';
+export function GET(){const routes=['/','/posts/','/search/','/tags/','/archives/',...posts.map(p=>p.url),...categories.map(c=>`/posts/${c.id}/`),...tags.map(t=>`/tags/${tagSlug(t)}/`)];return new Response(`<?xml version="1.0" encoding="UTF-8"?><urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">${routes.map(r=>`<url><loc>https://zheng-yangyang.github.io${encodeURI(r).replace(/&/g,'&amp;')}</loc></url>`).join('')}</urlset>`,{headers:{'Content-Type':'application/xml'}})}

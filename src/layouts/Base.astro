@@ -1,0 +1,18 @@
+---
+import '../styles/global.css';
+const {title="Yangyang · 思考与构建",description="关于 AI、工程与持续学习的个人笔记。"}=Astro.props;
+const pathname=Astro.url.pathname;
+---
+<!doctype html><html lang="zh-CN"><head><meta charset="UTF-8"/><meta name="viewport" content="width=device-width,initial-scale=1"/><meta name="description" content={description}/><meta name="color-scheme" content="light dark"/><title>{title}</title><link rel="icon" href="/favicon.svg"/><link rel="canonical" href={new URL(pathname,Astro.site)}/><link rel="alternate" type="application/rss+xml" title="Yangyang's Blog" href="/index.xml"/>
+<script is:inline>try{const t=localStorage.getItem('theme');document.documentElement.dataset.theme=t||'light'}catch{}</script></head>
+<body><a class="skip" href="#main">跳至正文</a><header class="site-header"><div class="header-inner"><a class="brand" href="/" aria-label="Yangyang 首页"><span class="brand-mark">y<span>·</span></span><span>Yangyang<span class="brand-sub">NOTES & IDEAS</span></span></a><nav aria-label="主导航"><a class:list={[{active:pathname.startsWith('/posts')}]} href="/posts/">笔记</a><a class:list={[{active:pathname.startsWith('/tags')}]} href="/tags/">主题</a><a class:list={[{active:pathname.startsWith('/archives')}]} href="/archives/">归档</a><a class="search-link" href="/search/" aria-label="搜索文章">搜索 <span>⌕</span></a><button id="theme-toggle" aria-label="切换深色模式" title="切换深色模式">◐</button><a class="github-link" href="https://github.com/Zheng-Yangyang" target="_blank" rel="noopener noreferrer">GitHub ↗</a></nav></div></header><main id="main"><slot/></main><footer class="site-footer"><div><a class="footer-brand" href="/">Yangyang.</a><p>保持好奇，持续构建。</p></div><div class="footer-right"><a href="/index.xml">RSS ↗</a><span>© {new Date().getFullYear()} Zheng Yangyang</span><span>记录尚未完成的思考。</span></div></footer>
+<script>
+const button=document.querySelector<HTMLButtonElement>('#theme-toggle');
+function sync(){button?.setAttribute('aria-pressed',String(document.documentElement.dataset.theme==='dark'));}
+document.querySelectorAll<HTMLPreElement>('.prose pre').forEach(pre=>{
+  const copy=document.createElement('button');copy.className='copy-code';copy.textContent='复制';copy.setAttribute('aria-label','复制代码');
+  copy.addEventListener('click',async()=>{try{await navigator.clipboard.writeText(pre.querySelector('code')?.textContent||'');copy.textContent='已复制';}catch{copy.textContent='复制失败';}setTimeout(()=>copy.textContent='复制',1800)});
+  const wrap=document.createElement('div');wrap.className='code-wrap';pre.before(wrap);wrap.append(pre,copy);
+});
+sync();button?.addEventListener('click',()=>{const theme=document.documentElement.dataset.theme==='dark'?'light':'dark';document.documentElement.dataset.theme=theme;try{localStorage.setItem('theme',theme)}catch{}sync()});
+</script></body></html>

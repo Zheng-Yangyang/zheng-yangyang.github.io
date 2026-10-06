@@ -1,0 +1,3 @@
+User-agent: *
+Allow: /
+Sitemap: https://zheng-yangyang.github.io/sitemap.xml

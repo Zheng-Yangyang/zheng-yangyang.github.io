@@ -1,0 +1,12 @@
+---
+import Base from '../../layouts/Base.astro';
+import PostList from '../../components/PostList.astro';
+import {posts,categories,renderPost,dateLabel,tagSlug} from '../../lib/posts';
+export function getStaticPaths(){return [...posts.map(post=>({params:{slug:post.slug},props:{post}})),...categories.map(category=>({params:{slug:category.id},props:{category}}))]}
+const {post,category}=Astro.props;
+const rendered=post?await renderPost(post):null;
+const cat=post?categories.find(c=>c.id===post.category):category;
+const index=post?posts.findIndex(p=>p.slug===post.slug):-1;
+---
+<Base title={`${post?.title||cat.name} · Yangyang`} description={post?.description||cat.subtitle}>{post?<>
+<div class="article-header section-wrap"><a class="eyebrow" href={`/posts/${cat.id}/`}>笔记 / {cat.name} ↗</a><h1>{post.title}</h1><p class="article-deck">{post.description}</p><div class="post-meta">{dateLabel(post.date)}<span>·</span>{post.minutes} 分钟阅读<span>·</span>Zheng Yangyang</div></div><div class="article-grid section-wrap"><article class="prose" set:html={rendered.html}/>{rendered.headings.length>0&&<aside class="toc"><span class="eyebrow">ON THIS PAGE / 目录</span><nav aria-label="文章目录">{rendered.headings.filter(h=>h.depth<=3).map(h=><a class:list={[{nested:h.depth===3}]} href={`#${h.slug}`}>{h.text}</a>)}</nav><a class="text-link small" href="#main">回到顶部 ↑</a></aside>}</div><div class="article-end section-wrap"><div class="tag-list">{post.tags.map(tag=><a href={`/tags/${tagSlug(tag)}/`}>{tag}</a>)}</div><nav class="post-navigation" aria-label="相邻文章">{[posts[index-1],posts[index+1]].map((p,i)=>p?<a href={p.url}><span class="eyebrow">{i===0?'← 较新笔记':'较早笔记 →'}</span><h3>{p.title}</h3></a>:<div/>)}</nav></div></>:<section class="section-wrap listing"><span class="eyebrow">TOPIC / 专题笔记</span><h1>{cat.name}</h1><p class="page-deck">{cat.subtitle}</p>{posts.some(p=>p.category===cat.id)?<PostList posts={posts.filter(p=>p.category===cat.id)}/>:<p class="empty">这个专题正在酝酿中，先看看<a href="/posts/">其他笔记 ↗</a>。</p>}</section>}</Base>

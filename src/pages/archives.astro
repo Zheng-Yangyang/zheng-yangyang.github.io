@@ -1,0 +1,7 @@
+---
+import Base from '../layouts/Base.astro';
+import PostList from '../components/PostList.astro';
+import {posts} from '../lib/posts';
+const years=[...new Set(posts.map(p=>p.date.getFullYear()))];
+---
+<Base title="归档 · Yangyang"><section class="section-wrap listing"><span class="eyebrow">A RECORD OVER TIME</span><h1>时间里的笔记。</h1><p class="page-deck">每一次记录，都是向前的一小步。</p>{years.map(year=><section class="archive-year"><h2>{year}<span>{posts.filter(p=>p.date.getFullYear()===year).length} 篇</span></h2><PostList posts={posts.filter(p=>p.date.getFullYear()===year)}/></section>)}</section></Base>

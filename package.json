@@ -1,0 +1,1 @@
+{"name":"yangyang-notebook","private":true,"type":"module","scripts":{"dev":"astro dev","build":"astro build","preview":"astro preview","check":"node scripts/check-build.mjs"},"dependencies":{"astro":"^5.0.0","gray-matter":"^4.0.3","marked":"^15.0.0","marked-highlight":"^2.2.1","shiki":"^3.0.0","github-slugger":"^2.0.0"}}
