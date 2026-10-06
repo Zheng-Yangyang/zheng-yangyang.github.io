@@ -1,0 +1,11 @@
+/* Keep the introduction compact so readers reach the articles sooner. */
+.first-entry.home-info {
+    min-height: 180px;
+    margin: var(--gap) 0;
+}
+
+@media screen and (max-width: 768px) {
+    .first-entry.home-info {
+        min-height: 160px;
+    }
+}

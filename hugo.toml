@@ -1,14 +1,18 @@
 baseURL = "https://Zheng-Yangyang.github.io/"
 languageCode = "zh-cn"
+defaultContentLanguage = "zh"
+hasCJKLanguage = true
 title = "Yangyang's Blog"
 theme = "PaperMod"
-paginate = 10
+[pagination]
+  pagerSize = 10
 
 [params]
   env = "production"
   title = "Yangyang's Blog"
   description = "记录技术笔记与思考"
   author = "Zheng Yangyang"
+  DateFormat = "2006年1月2日"
   defaultTheme = "auto"         # auto / light / dark
   ShowReadingTime = true
   ShowShareButtons = false
