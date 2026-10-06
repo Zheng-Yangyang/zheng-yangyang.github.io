@@ -14,6 +14,13 @@ for(const file of files.filter(f=>f.endsWith('.html'))){
  }
  if(html.includes('/Users/zyy/'))errors.push(`${file}: local filesystem path exposed`);
 }
-for(const route of ['index.html','search/index.html','archives/index.html','tags/index.html','posts/agent/claude-code/index.html','index.xml','404.html'])if(!fs.existsSync(path.join(root,route)))errors.push(`Missing ${route}`);
+for(const route of ['index.html','search/index.html','archives/index.html','tags/index.html','index.xml','404.html'])if(!fs.existsSync(path.join(root,route)))errors.push(`Missing ${route}`);
+// Validate published article routes from current content, allowing deliberate removals.
+for(const file of walk(path.resolve('content/posts')).filter(f=>f.endsWith('.md')&&!path.basename(f).startsWith('_'))){
+ const source=fs.readFileSync(file,'utf8');
+ if(/^draft:\s*true\s*$/m.test(source))continue;
+ const slug=path.relative(path.resolve('content/posts'),file).replace(/\/index\.md$|\.md$/,'');
+ if(!fs.existsSync(path.join(root,'posts',slug,'index.html')))errors.push(`Missing article: ${slug}`);
+}
 if(errors.length){console.error(errors.join('\n'));process.exit(1)}
 console.log(`Verified ${files.filter(f=>f.endsWith('.html')).length} pages: internal links, images, legacy article routes and RSS.`);
