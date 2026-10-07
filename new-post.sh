@@ -10,9 +10,10 @@ echo "=============================="
 # 选择分类
 echo ""
 echo "请选择分类："
-categories=("golang" "agent" "llm" "infra" "web" "interview-preparation")
+categories=("agent" "engineering" "interview-preparation" "others")
+category_names=("AI 与 Agent" "编程与工程" "算法与求职" "生活与回忆")
 for i in "${!categories[@]}"; do
-  echo "  $((i+1)). ${categories[$i]}"
+  echo "  $((i+1)). ${category_names[$i]}"
 done
 echo ""
 read -e -p "输入编号 (1-${#categories[@]}): " cat_choice

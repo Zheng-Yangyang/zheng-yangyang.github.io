@@ -25,4 +25,4 @@ function articleAssets() {
     })
   }};
 }
-export default defineConfig({site:'https://zheng-yangyang.github.io',output:'static',devToolbar:{enabled:false},publicDir:'static',trailingSlash:'always',integrations:[articleAssets()]});
+export default defineConfig({site:'https://zheng-yangyang.github.io',redirects:{'/posts/golang/':'/posts/engineering/','/posts/web/':'/posts/engineering/','/posts/infra/':'/posts/engineering/','/posts/llm/':'/posts/agent/'},output:'static',devToolbar:{enabled:false},publicDir:'static',trailingSlash:'always',integrations:[articleAssets()]});

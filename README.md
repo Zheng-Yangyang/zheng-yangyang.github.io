@@ -28,3 +28,12 @@ npm run preview
 原有文章路径 `/posts/分类/文章名/` 保持可用。新增内容会自动进入列表、搜索和 RSS。专题配置在 `src/lib/posts.ts`，页面在 `src/pages/`，样式在 `src/styles/global.css`。
 
 之前的 Hugo 配置和主题作为迁移参考保留，当前开发、构建和部署均使用 Astro。
+
+## 分类
+
+- agent：AI 与 Agent
+- engineering：编程与工程
+- interview-preparation：算法与求职
+- others：生活与回忆
+
+文章优先按 frontmatter 的 categories 字段归类，文件路径保持稳定。旧的 golang、web、infra 归入编程与工程，llm 归入 AI 与 Agent。

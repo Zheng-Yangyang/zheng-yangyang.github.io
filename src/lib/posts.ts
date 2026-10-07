@@ -6,19 +6,23 @@ import { markedHighlight } from 'marked-highlight';
 import { codeToHtml } from 'shiki';
 import GithubSlugger from 'github-slugger';
 export const categories = [
-  {id:'agent',name:'AI & Agent',subtitle:'理解智能，构建工具',symbol:'✳'},
-  {id:'golang',name:'Go & 工程',subtitle:'从语言到系统的细节',symbol:'⌘'},
-  {id:'interview-preparation',name:'算法 & 成长',subtitle:'把学习变成日常',symbol:'↗'},
-  {id:'others',name:'随笔 & 实践',subtitle:'想法、记录与小实验',symbol:'☷'},
-  {id:'llm',name:'大语言模型',subtitle:'探索模型背后的原理',symbol:'◌'},
-  {id:'infra',name:'基础设施',subtitle:'系统运行的基石',symbol:'⊞'},
-  {id:'web',name:'Web 开发',subtitle:'连接想法与界面',symbol:'⊙'},
+  {id:'agent',name:'AI 与 Agent',subtitle:'模型、工具与智能应用',symbol:'✳'},
+  {id:'engineering',name:'编程与工程',subtitle:'语言、系统与开发实践',symbol:'⌘'},
+  {id:'interview-preparation',name:'算法与求职',subtitle:'算法练习、面试与求职复盘',symbol:'↗'},
+  {id:'others',name:'生活与回忆',subtitle:'个人经历与生活随笔',symbol:'☷'},
 ];
+const legacyCategories: Record<string,string> = {golang:'engineering',web:'engineering',infra:'engineering',llm:'agent'};
+function resolveCategory(data:Record<string,any>,slug:string) {
+  const original = data.categories?.[0] || slug.split('/')[0];
+  const category = legacyCategories[original] || original;
+  if (!categories.some(c=>c.id===category)) throw new Error(`Unknown category: ${original} (${slug})`);
+  return category;
+}
 function walk(dir:string):string[] {return fs.readdirSync(dir,{withFileTypes:true}).flatMap(e=>e.isDirectory()?walk(path.join(dir,e.name)):e.name.endsWith('.md')&&!e.name.startsWith('_')?[path.join(dir,e.name)]:[])}
 export const posts = walk('content/posts').map(file=>{
   const {data,content}=matter(fs.readFileSync(file,'utf8'));
   const slug=file.replace(/^content\/posts\//,'').replace(/\/index\.md$|\.md$/,'');
-  return {...data,title:String(data.title),description:String(data.description||''),tags:(data.tags||[]) as string[],category:slug.split('/')[0],slug,url:`/posts/${slug}/`,body:content,date:new Date(data.date),minutes:Math.max(1,Math.ceil(content.replace(/```[\s\S]*?```/g,'').length/650))};
+  return {...data,title:String(data.title),description:String(data.description||''),tags:(data.tags||[]) as string[],category:resolveCategory(data,slug),slug,url:`/posts/${slug}/`,body:content,date:new Date(data.date),minutes:Math.max(1,Math.ceil(content.replace(/```[\s\S]*?```/g,'').length/650))};
 }).filter(p=>!p.draft).sort((a,b)=>b.date.getTime()-a.date.getTime() || a.title.localeCompare(b.title,'zh-CN'));
 export const dateLabel=(date:Date)=>new Intl.DateTimeFormat('zh-CN',{year:'numeric',month:'2-digit',day:'2-digit',timeZone:'Asia/Shanghai'}).format(date);
 export const tagSlug=(tag:string)=>tag.toLowerCase().replace(/\s+/g,'-');
