@@ -16,6 +16,7 @@ description: "每天两小时的十二周算法训练路线、训练规则与学
 ## 学习记录索引
 
 - [第一周：区间计算与重复工作](/posts/interview-preparation/algorithm-training-week-01/)
+- [训练 002：片段内的上升次数](/posts/interview-preparation/algorithm-training-002/)
 - [单题学习记录模板](/posts/interview-preparation/algorithm-training-template/)
 - 后续专题和单题记录完成后，在这里补充链接。
 
