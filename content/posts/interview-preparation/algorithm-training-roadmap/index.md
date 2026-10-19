@@ -17,6 +17,7 @@ description: "每天两小时的十二周算法训练路线、训练规则与学
 
 - [第一周：区间计算与重复工作](/posts/interview-preparation/algorithm-training-week-01/)
 - [训练 002：片段内的上升次数](/posts/interview-preparation/algorithm-training-002/)
+- [训练 003：片段内部的峰顶](/posts/interview-preparation/algorithm-training-003/)
 - [单题学习记录模板](/posts/interview-preparation/algorithm-training-template/)
 - 后续专题和单题记录完成后，在这里补充链接。
 
@@ -82,6 +83,8 @@ description: "每天两小时的十二周算法训练路线、训练规则与学
 - 第一周：[训练 001：合格的观测片段](/posts/interview-preparation/algorithm-training-001/)提示后完成并通过运行验证；延迟复习与变式待完成。
 - 2026-10-18：按学习者要求暂停训练，先自行准备次日面试，计划 2026-10-19 返回继续。暂停位置为训练 002“片段内的上升次数”：题目已发布，尚未提交思路或代码。恢复时从该题第一轮思考继续，不重新开始训练 001。
 - 先前提出的“一次免费名额”暂存为后续候选题，未作为已完成诊断或第一周正式练习。
+
+- 2026-10-19：已恢复。训练 002 阅读完整参考代码后完成讲解，训练 003 用于检验迁移能力。
 
 ## 后续进阶方向
 
