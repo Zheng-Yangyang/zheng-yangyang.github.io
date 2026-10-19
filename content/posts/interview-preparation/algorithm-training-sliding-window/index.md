@@ -25,3 +25,5 @@ description: "参考灵神题单，从定长窗口到不定长窗口，逐步训
 ## 练习记录
 
 - [训练 004：合格的检测窗口](/posts/interview-preparation/algorithm-training-004/)：提示后完成，通过 6 个固定用例和 2,000 次随机对拍，延迟复测待完成。
+
+- [训练 005：种类最多的连续任务](/posts/interview-preparation/algorithm-training-005/)：已发布，待提交思路；训练定长窗口内的频次维护。

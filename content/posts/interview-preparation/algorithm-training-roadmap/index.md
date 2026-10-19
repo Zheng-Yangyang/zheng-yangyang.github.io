@@ -20,6 +20,7 @@ description: "以灵神题单为骨架的 Python 算法训练路线、迁移练�
 - [训练 003：片段内部的峰顶](/posts/interview-preparation/algorithm-training-003/)
 - [模块一：滑动窗口](/posts/interview-preparation/algorithm-training-sliding-window/)
 - [训练 004：合格的检测窗口](/posts/interview-preparation/algorithm-training-004/)
+- [训练 005：种类最多的连续任务](/posts/interview-preparation/algorithm-training-005/)
 - [单题学习记录模板](/posts/interview-preparation/algorithm-training-template/)
 - 后续专题和单题记录完成后，在这里补充链接。
 
@@ -96,3 +97,5 @@ description: "以灵神题单为骨架的 Python 算法训练路线、迁移练�
 2026-10-19 课程调整：学习者要求结束当前专题，从灵神基础路线开始。当前正式进入模块一“定长滑动窗口”，首题为训练 004。
 
 2026-10-19：训练 004 提示后完成。独立选择维护总和与负数计数，窗口形成时机、移出下标与同步计数在提示后修正；最终代码通过实际对拍。
+
+2026-10-19：发布训练 005，定长窗口的新增目标是维护不同元素数量，尚未提交思路。
