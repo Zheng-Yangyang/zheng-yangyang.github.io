@@ -1,0 +1,356 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>路书 v2｜深圳 · 武汉 · 深圳</title>
+<style>
+:root {
+  --bg: #F3F0E8;
+  --paper: #FFFFFF;
+  --ink: #1C1C1E;
+  --ink-2: #57575D;
+  --ink-3: #8E8E93;
+  --rule: #E4DFD3;
+  --red: #E03A3E;
+  --teal: #0F9D8A;
+  --local: #4A4A4F;
+  --amber: #C98700;
+  --amber-bg: #FFF3D3;
+}
+* { box-sizing: border-box; }
+html { background: var(--bg); }
+body {
+  margin: 0;
+  color: var(--ink);
+  font-family: -apple-system, BlinkMacSystemFont, "PingFang SC", "Hiragino Sans GB", "Noto Sans CJK SC", "Microsoft YaHei", sans-serif;
+  font-variant-numeric: tabular-nums;
+  -webkit-font-smoothing: antialiased;
+}
+.sheet { max-width: 1080px; margin: 0 auto; padding: 56px 44px 40px; }
+
+.kicker { font-size: 15px; font-weight: 700; letter-spacing: .14em; color: var(--ink-2); }
+h1 {
+  margin: 14px 0 12px;
+  display: flex; flex-wrap: wrap; align-items: center; gap: 8px 14px;
+  font-size: 44px; line-height: 1.15; font-weight: 800; letter-spacing: .03em;
+}
+h1 .seg { display: inline-block; width: 46px; height: 10px; border-radius: 5px; background: var(--c); }
+.sub { margin: 0; font-size: 18px; color: var(--ink-2); }
+
+.map { margin-top: 28px; background: var(--paper); border: 1px solid var(--rule); border-radius: 24px; overflow: hidden; }
+.map svg { display: block; width: 100%; height: auto; }
+.ln { fill: none; stroke-width: 14; stroke-linecap: round; stroke-linejoin: round; }
+.ln.track { stroke-width: 12; }
+.ln.red { stroke: var(--red); }
+.ln.teal { stroke: var(--teal); }
+.ln.local { stroke: var(--local); stroke-width: 8; }
+.node circle, .node rect { fill: #fff; stroke: var(--ink); stroke-width: 6; }
+.node text { font-size: 15px; font-weight: 800; text-anchor: middle; fill: var(--ink); }
+.node.home rect { fill: var(--ink); }
+.node.home text { fill: #fff; font-size: 17px; }
+.station circle { fill: #fff; stroke: var(--local); stroke-width: 5; }
+.badge rect { fill: var(--c); stroke: #fff; stroke-width: 4; }
+.badge text { font-size: 17px; font-weight: 800; text-anchor: middle; fill: #fff; letter-spacing: .03em; }
+.city-name { font-size: 34px; font-weight: 800; fill: var(--ink); }
+.city-date { font-size: 15px; font-weight: 700; fill: var(--ink-2); }
+.city-note { font-size: 14px; fill: var(--ink-3); }
+.seg-main { font-size: 15px; font-weight: 700; fill: var(--ink); }
+.seg-sub { font-size: 14px; fill: var(--ink-2); }
+.stat-big { font-size: 46px; font-weight: 800; fill: var(--ink); }
+.stat-sub { font-size: 16px; font-weight: 700; fill: var(--ink-2); }
+.stat-label { font-size: 13px; font-weight: 700; letter-spacing: .12em; fill: var(--ink-3); }
+.stat-money { font-size: 38px; font-weight: 800; fill: var(--ink); }
+.stat-note { font-size: 14px; fill: var(--ink-2); }
+.legend text { font-size: 13.5px; fill: var(--ink-2); }
+.lg { fill: none; stroke-width: 7; stroke-linecap: round; }
+.lg.red { stroke: var(--red); }
+.lg.teal { stroke: var(--teal); }
+.lg.local { stroke: var(--local); }
+.lg-node { fill: #fff; stroke: var(--ink); stroke-width: 4; }
+
+.section-head { display: flex; flex-wrap: wrap; align-items: baseline; justify-content: space-between; gap: 10px 20px; margin: 40px 4px 16px; }
+h2 { margin: 0; font-size: 26px; font-weight: 800; letter-spacing: .03em; }
+.key { display: flex; flex-wrap: wrap; gap: 6px 18px; font-size: 13.5px; color: var(--ink-2); }
+.key span { display: inline-flex; align-items: center; gap: 6px; }
+.key i { display: inline-block; border-radius: 50%; background: #fff; }
+.key .k-plan { width: 14px; height: 14px; border: 3.5px solid var(--ink-3); }
+.key .k-major { width: 18px; height: 18px; border: 5px solid var(--ink); }
+.key .k-tip { width: 14px; height: 14px; border: 3.5px solid var(--amber); }
+
+.days { display: grid; grid-template-columns: 1fr 1fr; gap: 18px; }
+.day { background: var(--paper); border: 1px solid var(--rule); border-radius: 20px; padding: 20px 22px 16px; }
+.day-head { display: flex; align-items: center; gap: 14px; padding-bottom: 14px; margin-bottom: 6px; border-bottom: 1px solid var(--rule); }
+.day-badge { flex: none; width: 54px; height: 54px; border-radius: 15px; display: grid; place-items: center; background: var(--c); color: #fff; font-size: 21px; font-weight: 800; }
+.day-meta { flex: 1; min-width: 0; }
+.day-date { font-size: 14px; font-weight: 700; color: var(--ink-2); }
+.day-route { margin-top: 2px; font-size: 22px; font-weight: 800; }
+.day-stay { flex: none; padding: 6px 11px; border-radius: 10px; background: #F4F1EA; font-size: 12.5px; line-height: 1.35; color: var(--ink-2); text-align: right; }
+.day-stay b { display: block; font-size: 14px; color: var(--ink); }
+
+.stops { position: relative; margin: 0; padding: 0; list-style: none; }
+.stops::before { content: ""; position: absolute; left: 71px; top: 16px; bottom: 16px; width: 6px; border-radius: 3px; background: var(--c); }
+.stop { display: grid; grid-template-columns: 56px 36px 1fr; align-items: start; padding: 8px 0; }
+.stop time { padding-top: 2px; text-align: right; font-size: 14px; font-weight: 700; color: var(--ink-2); }
+.dot { position: relative; z-index: 1; justify-self: center; width: 18px; height: 18px; margin-top: 2px; border-radius: 50%; background: #fff; border: 4px solid var(--c); }
+.stop.major .dot { width: 24px; height: 24px; margin-top: -1px; border: 6px solid var(--ink); }
+.stop.tip .dot { border-color: var(--amber); }
+.what b { font-size: 16px; font-weight: 700; line-height: 1.4; }
+.what p { margin: 3px 0 0; font-size: 13.5px; line-height: 1.5; color: var(--ink-2); }
+.stop.tip .what b { font-weight: 600; color: var(--ink-2); }
+.tag { display: inline-block; margin-left: 6px; padding: 0 7px; border-radius: 9px; font-size: 12px; font-style: normal; font-weight: 700; line-height: 19px; vertical-align: 2px; }
+.tag.meal { background: color-mix(in srgb, var(--c) 13%, #fff); color: var(--c); }
+.tag.stay { background: #EFECE4; color: var(--ink-2); }
+.tag.tip { background: var(--amber-bg); color: var(--amber); }
+.alt { margin: 8px 0 2px 92px; padding: 10px 12px; border: 1.5px dashed #DDCB98; border-radius: 12px; background: #FFFBEF; font-size: 13.5px; line-height: 1.55; color: var(--ink-2); }
+.alt b { color: var(--ink); }
+
+.compare { background: var(--paper); border: 1px solid var(--rule); border-radius: 20px; padding: 22px 24px 20px; }
+.compare h3 { margin: 0; font-size: 22px; font-weight: 800; }
+.compare .lead { margin: 4px 0 6px; font-size: 13px; color: var(--ink-3); font-weight: 700; }
+.cmp-row { margin-top: 16px; }
+.cmp-top { display: flex; justify-content: space-between; align-items: baseline; gap: 12px; font-size: 14.5px; }
+.cmp-top b { font-weight: 700; }
+.cmp-top span { font-weight: 800; white-space: nowrap; }
+.cmp-row.now .cmp-top span { color: var(--red); }
+.cmp-track { position: relative; height: 10px; margin-top: 7px; border-radius: 5px; background: #F1EEE6; }
+.cmp-range { position: absolute; top: 0; bottom: 0; border-radius: 5px; background: var(--c); }
+.cmp-axis { position: relative; height: 16px; margin-top: 8px; font-size: 11.5px; color: var(--ink-3); }
+.cmp-axis span { position: absolute; top: 0; transform: translateX(-50%); }
+.cmp-axis span:first-child { transform: none; }
+.cmp-axis span:last-child { transform: translateX(-100%); }
+.cmp-note { margin: 16px 0 0; padding-top: 14px; border-top: 1px dashed var(--rule); font-size: 13.5px; line-height: 1.65; color: var(--ink-2); }
+.cmp-note b { color: var(--ink); }
+
+.bottom { display: grid; grid-template-columns: 1fr 1fr; gap: 18px; margin-top: 18px; }
+.panel { background: var(--paper); border: 1px solid var(--rule); border-radius: 20px; padding: 22px 24px 20px; }
+.panel h2 { font-size: 22px; }
+.panel h2 small { margin-left: 8px; font-size: 13px; font-weight: 700; letter-spacing: 0; color: var(--ink-3); }
+.total { margin-top: 12px; font-size: 40px; font-weight: 800; }
+.total-note { margin: 4px 0 6px; font-size: 13.5px; line-height: 1.55; color: var(--ink-2); }
+.ledger { width: 100%; border-collapse: collapse; font-size: 14.5px; }
+.ledger th { padding: 14px 0 6px; border-bottom: 1px solid var(--rule); text-align: left; font-size: 13px; font-weight: 800; color: var(--ink); }
+.ledger td { padding: 7px 0; border-bottom: 1px dashed #ECE7DB; color: var(--ink-2); }
+.ledger .amt { text-align: right; white-space: nowrap; font-weight: 700; color: var(--ink); }
+.ledger em { margin-left: 6px; padding: 0 5px; border-radius: 6px; background: #F1EEE6; font-size: 11.5px; font-style: normal; font-weight: 700; color: var(--ink-3); }
+.tips ol { margin: 14px 0 0; padding: 0; list-style: none; counter-reset: tip; }
+.tips li { position: relative; padding: 0 0 14px 36px; counter-increment: tip; font-size: 14.5px; line-height: 1.65; color: var(--ink-2); }
+.tips li:last-child { padding-bottom: 0; }
+.tips li::before { content: counter(tip); position: absolute; left: 0; top: 2px; width: 24px; height: 24px; border-radius: 50%; display: grid; place-items: center; background: var(--ink); color: #fff; font-size: 13px; font-weight: 800; }
+.tips li b { color: var(--ink); }
+
+footer { margin: 22px 4px 0; font-size: 12.5px; line-height: 1.6; color: var(--ink-3); }
+
+@media (max-width: 860px) {
+  .sheet { padding: 32px 16px; }
+  h1 { font-size: 30px; }
+  .days, .bottom { grid-template-columns: 1fr; }
+}
+</style>
+</head>
+<body>
+<main class="sheet">
+
+  <header>
+    <div class="kicker">路书 v2 · 2026.11.19 周四 — 11.21 周六</div>
+    <h1>
+      <span>深圳</span><i class="seg" style="--c: var(--red)"></i>
+      <span>武汉</span><i class="seg" style="--c: var(--teal)"></i>
+      <span>深圳</span>
+    </h1>
+    <p class="sub">3 天 2 晚 · 只去武汉，南京、上海下次再去 · 全程高铁二等座</p>
+  </header>
+
+  <section class="map">
+    <svg viewBox="0 0 1000 540" role="img" aria-labelledby="map-title">
+      <title id="map-title">线路示意图：周四坐 G846 从深圳到武汉，在光谷东、华科、华为武研所之间活动，周六坐 G399 从武汉站回深圳</title>
+      <defs>
+        <pattern id="grid" width="20" height="20" patternUnits="userSpaceOnUse">
+          <path d="M20 0H0V20" fill="none" stroke="#F1EDE4" stroke-width="1"/>
+        </pattern>
+      </defs>
+      <rect width="1000" height="540" fill="url(#grid)"/>
+
+      <path class="ln local" d="M500 200 H940"/>
+      <path class="ln local" d="M820 200 L660 360 L500 200"/>
+      <path class="ln track red" d="M150 188 H500"/>
+      <path class="ln track teal" d="M150 212 H500"/>
+
+      <g class="badge" style="--c: var(--red)" transform="translate(270 188)">
+        <rect x="-42" y="-16" width="84" height="32" rx="16"/>
+        <text y="6">G846</text>
+      </g>
+      <g class="badge" style="--c: var(--teal)" transform="translate(390 212)">
+        <rect x="-42" y="-16" width="84" height="32" rx="16"/>
+        <text y="6">G399</text>
+      </g>
+
+      <g text-anchor="middle">
+        <text x="325" y="132" class="seg-main">去 · 周四 深圳北 09:20 → 武汉站 14:10</text>
+        <text x="325" y="155" class="seg-sub">4 小时 50 分 · 二等座 ¥544.5</text>
+        <text x="325" y="260" class="seg-main">回 · 周六 武汉站 15:19 → 深圳北 19:30</text>
+        <text x="325" y="283" class="seg-sub">4 小时 11 分 · 二等座约 ¥550–630</text>
+      </g>
+
+      <g class="node home"><rect x="126" y="168" width="48" height="64" rx="24"/><text x="150" y="206">家</text></g>
+      <g class="node"><rect x="476" y="168" width="48" height="64" rx="24"/></g>
+      <g class="node" transform="translate(820 200)"><circle r="24"/><text y="5.5">2晚</text></g>
+      <g class="station" transform="translate(660 360)"><circle r="14"/></g>
+      <g class="station" transform="translate(940 200)"><circle r="14"/></g>
+
+      <g text-anchor="end">
+        <text x="110" y="212" class="city-name">深圳</text>
+        <text x="110" y="238" class="city-date">坪洲 · 家</text>
+        <text x="565" y="292" class="seg-main">周六返程</text>
+        <text x="565" y="314" class="seg-sub">华科打车去武汉站约 30 分钟</text>
+      </g>
+      <g text-anchor="middle">
+        <text x="740" y="66" class="city-name">武汉</text>
+        <text x="740" y="92" class="city-date">周四 – 周六 · 住 2 晚</text>
+        <text x="500" y="152" class="seg-main">武汉站</text>
+        <text x="660" y="188" class="seg-sub">周四 · 打车 30–40 分钟</text>
+        <text x="820" y="146" class="seg-main">安朴悦庭</text>
+        <text x="820" y="166" class="city-note">光谷东</text>
+        <text x="940" y="152" class="seg-main">华为武研所</text>
+        <text x="940" y="172" class="city-note">周五晚饭</text>
+        <text x="660" y="404" class="seg-main">华中科技大学</text>
+        <text x="660" y="426" class="city-note">约饭 3 场</text>
+      </g>
+      <g text-anchor="start">
+        <text x="765" y="292" class="seg-sub">地铁 / 打车约 30 分钟</text>
+        <text x="765" y="314" class="seg-sub">周四晚、周五午、周六午</text>
+      </g>
+
+      <text x="60" y="372" class="stat-big">3 天 2 晚</text>
+      <text x="62" y="404" class="stat-sub">只去武汉 · 4 场约饭</text>
+      <text x="62" y="452" class="stat-label">预算（1 人）</text>
+      <text x="60" y="494" class="stat-money">≈ ¥2,400–2,700</text>
+      <text x="62" y="520" class="stat-note">比三城版少花约 ¥1,800–2,500</text>
+
+      <g class="legend" transform="translate(790 410)">
+        <path class="lg red" d="M0 -5 H40"/>
+        <path class="lg teal" d="M0 6 H40"/>
+        <text x="54" y="6">去程 / 回程高铁</text>
+        <path class="lg local" d="M0 38 H40"/>
+        <text x="54" y="43">市内 地铁 / 打车</text>
+        <circle class="lg-node" cx="20" cy="72" r="12"/>
+        <text x="54" y="77">住宿，圈里是晚数</text>
+      </g>
+    </svg>
+  </section>
+
+  <div class="section-head">
+    <h2>逐日行程</h2>
+    <div class="key">
+      <span><i class="k-plan"></i>原计划</span>
+      <span><i class="k-major"></i>上下车</span>
+      <span><i class="k-tip"></i>补充建议</span>
+    </div>
+  </div>
+
+  <section class="days">
+
+    <article class="day" style="--c: var(--red)">
+      <header class="day-head">
+        <span class="day-badge">D1</span>
+        <div class="day-meta"><div class="day-date">11/19 周四</div><div class="day-route">深圳 → 武汉</div></div>
+        <div class="day-stay">住<b>安朴悦庭</b></div>
+      </header>
+      <ol class="stops">
+        <li class="stop tip"><time>08:00</time><span class="dot"></span><div class="what"><b>坪洲出门去深圳北站<em class="tag tip">建议</em></b><p>地铁约 45 分钟，进站安检留足时间</p></div></li>
+        <li class="stop major"><time>09:20</time><span class="dot"></span><div class="what"><b>G846 深圳北 → 武汉站</b><p>二等座 ¥544.5 · 车程 4 小时 50 分</p></div></li>
+        <li class="stop"><time>中午</time><span class="dot"></span><div class="what"><b>高铁上吃午饭</b><p>12306 App 可以订餐，长沙南站送上车<em class="tag tip">建议</em></p></div></li>
+        <li class="stop major"><time>14:10</time><span class="dot"></span><div class="what"><b>到达武汉站</b><p>打车去光谷东约 30–40 分钟</p></div></li>
+        <li class="stop"><time>15:00</time><span class="dot"></span><div class="what"><b>入住安朴悦庭<em class="tag stay">住</em></b><p>连住 2 晚 ¥568，周五不用退房</p></div></li>
+        <li class="stop"><time>晚上</time><span class="dot"></span><div class="what"><b>光谷东 → 华中科技大学<em class="tag meal">约饭</em></b><p>和昊哥、kun、本科室友吃饭</p></div></li>
+      </ol>
+    </article>
+
+    <article class="day" style="--c: var(--red)">
+      <header class="day-head">
+        <span class="day-badge">D2</span>
+        <div class="day-meta"><div class="day-date">11/20 周五</div><div class="day-route">武汉</div></div>
+        <div class="day-stay">住<b>安朴悦庭</b></div>
+      </header>
+      <ol class="stops">
+        <li class="stop tip"><time>上午</time><span class="dot"></span><div class="what"><b>空档：睡个懒觉，吃碗热干面<em class="tag tip">建议</em></b></div></li>
+        <li class="stop"><time>中午</time><span class="dot"></span><div class="what"><b>华科附近吃自助<em class="tag meal">约饭</em></b><p>和鹏哥</p></div></li>
+        <li class="stop tip"><time>下午</time><span class="dot"></span><div class="what"><b>空档：东湖绿道或华科校园看秋色<em class="tag tip">建议</em></b></div></li>
+        <li class="stop"><time>晚上</time><span class="dot"></span><div class="what"><b>回华为武研所<em class="tag meal">约饭</em></b><p>和茂哥、黄总吃饭</p></div></li>
+        <li class="stop"><time>夜</time><span class="dot"></span><div class="what"><b>安朴悦庭 第 2 晚<em class="tag stay">住</em></b></div></li>
+      </ol>
+    </article>
+
+    <article class="day" style="--c: var(--teal)">
+      <header class="day-head">
+        <span class="day-badge">D3</span>
+        <div class="day-meta"><div class="day-date">11/21 周六</div><div class="day-route">武汉 → 深圳</div></div>
+        <div class="day-stay">晚上<b>到家</b></div>
+      </header>
+      <ol class="stops">
+        <li class="stop"><time>上午</time><span class="dot"></span><div class="what"><b>退房，带行李去华科</b></div></li>
+        <li class="stop"><time>中午</time><span class="dot"></span><div class="what"><b>和华科朋友吃午饭<em class="tag meal">约饭</em></b><p>不用赶车了，吃到 14:00 左右都来得及</p></div></li>
+        <li class="stop"><time>14:15</time><span class="dot"></span><div class="what"><b>华科打车去武汉站</b><p>约 30 分钟，带着行李比坐地铁省事</p></div></li>
+        <li class="stop major"><time>15:19</time><span class="dot"></span><div class="what"><b>G399 武汉站 → 深圳北<em class="tag tip">建议</em></b><p>二等座约 ¥550–630 · 车程 4 小时 11 分</p></div></li>
+        <li class="stop major"><time>19:30</time><span class="dot"></span><div class="what"><b>到达深圳北，回坪洲</b><p>地铁约 45 分钟，20:30 前到家</p></div></li>
+      </ol>
+      <div class="alt"><b>其他车次：</b>想早点到家坐 G381（13:59 → 17:50），想多聊会儿坐 G387（16:02 → 20:10），都从武汉站发车。</div>
+    </article>
+
+    <article class="compare">
+      <h3>和三城版比</h3>
+      <div class="lead">1 人 · 吃饭按 AA 估</div>
+      <div class="cmp-row now" style="--c: var(--red)">
+        <div class="cmp-top"><b>只去武汉（这次）</b><span>≈ ¥2,400–2,700</span></div>
+        <div class="cmp-track"><div class="cmp-range" style="left: 30%; width: 3.75%"></div></div>
+      </div>
+      <div class="cmp-row" style="--c: var(--ink-3)">
+        <div class="cmp-top"><b>武汉 + 南京 + 上海一次走完</b><span>≈ ¥4,200–5,200</span></div>
+        <div class="cmp-track"><div class="cmp-range" style="left: 52.5%; width: 12.5%"></div></div>
+      </div>
+      <div class="cmp-row" style="--c: var(--ink-3)">
+        <div class="cmp-top"><b>这次武汉 + 以后单独去南京上海</b><span>≈ ¥5,400–6,700</span></div>
+        <div class="cmp-track"><div class="cmp-range" style="left: 67.5%; width: 16.25%"></div></div>
+      </div>
+      <div class="cmp-axis"><span style="left: 0">¥0</span><span style="left: 25%">¥2,000</span><span style="left: 50%">¥4,000</span><span style="left: 75%">¥6,000</span><span style="left: 100%">¥8,000</span></div>
+      <p class="cmp-note">这次少花 <b>¥1,800–2,500</b>，1 万的毕业旅行预算里，留给第二段的钱从 ¥4,800–5,800 变成 <b>¥7,300–7,600</b>。代价是南京、上海以后单独去要 ¥3,000–4,000，两次加起来比一次走完多 <b>¥1,200–1,500</b>，主要多了“武汉回深圳”和“深圳去南京”两段长途。</p>
+    </article>
+
+  </section>
+
+  <section class="bottom">
+    <div class="panel budget">
+      <h2>预算<small>1 人 · 高铁二等座</small></h2>
+      <div class="total">≈ ¥2,400–2,700</div>
+      <p class="total-note">交通 + 住宿约 ¥1,900–2,000，吃饭约 ¥500–700（按 AA 估，请客另算）。</p>
+      <table class="ledger">
+        <tbody>
+          <tr><th>城际交通</th><th class="amt">≈ ¥1,100–1,180</th></tr>
+          <tr><td>G846 深圳北 → 武汉</td><td class="amt">¥544.5</td></tr>
+          <tr><td>G399 武汉 → 深圳北<em>估</em></td><td class="amt">≈ ¥550–630</td></tr>
+          <tr><th>住宿 · 2 晚</th><th class="amt">¥568</th></tr>
+          <tr><td>武汉 安朴悦庭 × 2 晚</td><td class="amt">¥568</td></tr>
+          <tr><th>其他</th><th class="amt">≈ ¥700–1,000</th></tr>
+          <tr><td>市内地铁 / 打车<em>估</em></td><td class="amt">≈ ¥200–300</td></tr>
+          <tr><td>吃饭（4 场约饭 + 自己吃）<em>估</em></td><td class="amt">≈ ¥500–700</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <div class="panel tips">
+      <h2>出发前补充</h2>
+      <ol>
+        <li><b>记好开售日。</b>高铁提前 15 天开售：11 月 5 日买去程 G846，11 月 7 日买周六回程。回程票价是浮动的，同一天不同车次可能差几十块。</li>
+        <li><b>带厚外套。</b>11 月下旬武汉早晚 5–10°C，白天 15°C 上下，碰上寒潮还会更冷，比深圳低十几度。</li>
+        <li><b>想多玩一天也行。</b>周六再住一晚安朴悦庭（约 ¥284），周日再回，总共多花 ¥400 左右，周六下午可以去东湖或黄鹤楼。</li>
+        <li><b>南京、上海下次直接用三城版。</b>那份路书里南京、上海两天的安排（住哪、怎么走、去哪看秋色）还能用；从深圳去南京坐飞机约 ¥550–1,000，高铁要 7 小时左右、¥700–840。</li>
+      </ol>
+    </div>
+  </section>
+
+  <footer>票价和时刻是 10 月 24 日查到的参考，开售后以 12306 为准。橙色圆点和「建议」标签是补充的内容，其余来自原计划。三城版路书见同目录的 index.html。</footer>
+
+</main>
+<script>document.documentElement.dataset.h = Math.ceil(document.documentElement.scrollHeight);</script>
+</body>
+</html>
