@@ -28,7 +28,7 @@ theme = "PaperMod"
 
   [[params.socialIcons]]
     name = "github"
-    url = "https://github.com/Zheng-Yangyang"
+    url = "https://github.com/yangozheng"
 
 [menu]
   [[menu.main]]

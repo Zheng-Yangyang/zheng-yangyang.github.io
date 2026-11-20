@@ -51,5 +51,5 @@ git push
 
 echo ""
 echo "✅ 发布完成！约 1 分钟后上线："
-echo "   https://zheng-yangyang.github.io"
+echo "   https://yangozheng.github.io"
 echo ""

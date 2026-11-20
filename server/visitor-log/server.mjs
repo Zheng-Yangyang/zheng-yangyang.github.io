@@ -6,7 +6,7 @@ fs.mkdirSync(dir,{recursive:true});
 const secretFile=`${dir}/admin-password`;
 if(!fs.existsSync(secretFile)) fs.writeFileSync(secretFile,crypto.randomBytes(24).toString('base64url'),{mode:0o600});
 const password=fs.readFileSync(secretFile,'utf8').trim();
-const origin='https://zheng-yangyang.github.io';
+const origin='https://yangozheng.github.io';
 const rates=new Map(), geo=new Map();
 const safeEqual=(a,b)=>{const x=Buffer.from(a),y=Buffer.from(b);return x.length===y.length&&crypto.timingSafeEqual(x,y)};
 const escape=s=>String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));

@@ -1,5 +1,5 @@
 (() => {
-  if (location.hostname !== 'zheng-yangyang.github.io') return;
+  if (location.hostname !== 'yangozheng.github.io') return;
   const send = () => {
     try {
       fetch('https://124.220.193.89/blog-stats/collect', {
